@@ -1,7 +1,8 @@
-package main
+package basic
 
 import (
 	"fmt"
+	"io/ioutil"
 )
 
 func bounded(v int) int {
@@ -48,27 +49,27 @@ func grade(score int) string {
 	return g
 }
 
-//func main() {
-//	const filename = "abc.txt"
-//	//contents, err := ioutil.ReadFile(filename)
-//	//if err != nil {
-//	//	fmt.Println(err)
-//	//} else {
-//	//	fmt.Printf("%s\n", contents)
-//	//}
-//	if contents, err := ioutil.ReadFile(filename); err != nil {
-//		fmt.Println(err)
-//	} else {
-//		fmt.Printf("%s\n", contents)
-//	}
-//
-//	fmt.Println(
-//		grade(0),
-//		grade(59),
-//		grade(60),
-//		grade(82),
-//		grade(99),
-//		grade(100),
-//		//grade(-3),
-//	)
-//}
+func main() {
+	const filename = "abc.txt"
+	//contents, err := ioutil.ReadFile(filename)
+	//if err != nil {
+	//	fmt.Println(err)
+	//} else {
+	//	fmt.Printf("%s\n", contents)
+	//}
+	if contents, err := ioutil.ReadFile(filename); err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Printf("%s\n", contents)
+	}
+
+	fmt.Println(
+		grade(0),
+		grade(59),
+		grade(60),
+		grade(82),
+		grade(99),
+		grade(100),
+		//grade(-3),
+	)
+}

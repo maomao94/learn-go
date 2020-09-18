@@ -1,4 +1,4 @@
-package main
+package basic
 
 import (
 	"bufio"
@@ -41,14 +41,14 @@ func forever() {
 	}
 }
 
-//func main() {
-//	fmt.Println(
-//		convertToBin(5),  // 101
-//		convertToBin(13), // 1011 ---> 1101
-//		convertToBin(0))
-//	printFile("abc.txt")
-//	//forever()
-//}
+func main() {
+	fmt.Println(
+		convertToBin(5),  // 101
+		convertToBin(13), // 1011 ---> 1101
+		convertToBin(0))
+	printFile("abc.txt")
+	//forever()
+}
 
 /**
 for的条件不需要括号

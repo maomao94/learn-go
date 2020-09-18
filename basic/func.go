@@ -1,4 +1,4 @@
-package main
+package basic
 
 import (
 	"fmt"
@@ -64,26 +64,26 @@ func swap1(a, b int) (int, int) {
 	return b, a
 }
 
-//func main() {
-//	if result, err := eval1(3, 4, "x"); err != nil {
-//		fmt.Println("Error:", err)
-//	} else {
-//		fmt.Println(result)
-//	}
-//	fmt.Println(eval1(8, 4, "/"))
-//	q, r := div(13, 3)
-//	fmt.Println(q, r)
-//	fmt.Println(apply(pow, 3, 2))
-//	fmt.Println(apply(
-//		func(a int, b int) int {
-//			return int(math.Pow(float64(a), float64(b)))
-//		},
-//		4, 2))
-//	fmt.Println(sum(1, 2, 3, 4, 5))
-//
-//	a, b := 3, 4
-//	swap(&a, &b)
-//	fmt.Println(a, b)
-//	a, b = swap1(a, b)
-//	fmt.Println(a, b)
-//}
+func main() {
+	if result, err := eval1(3, 4, "x"); err != nil {
+		fmt.Println("Error:", err)
+	} else {
+		fmt.Println(result)
+	}
+	fmt.Println(eval1(8, 4, "/"))
+	q, r := div(13, 3)
+	fmt.Println(q, r)
+	fmt.Println(apply(pow, 3, 2))
+	fmt.Println(apply(
+		func(a int, b int) int {
+			return int(math.Pow(float64(a), float64(b)))
+		},
+		4, 2))
+	fmt.Println(sum(1, 2, 3, 4, 5))
+
+	a, b := 3, 4
+	swap(&a, &b)
+	fmt.Println(a, b)
+	a, b = swap1(a, b)
+	fmt.Println(a, b)
+}

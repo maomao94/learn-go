@@ -1,4 +1,4 @@
-package main
+package basic
 
 import (
 	"fmt"
@@ -93,23 +93,23 @@ func enums() {
 	fmt.Println(b, kb, mb, gb, tb, pb)           //0 4 2 3
 }
 
-//func main() {
-//	fmt.Println("Hello world")
-//	variableZeroValue()
-//	variableInitialValue()
-//	variableTypeDeduction()
-//	variableShorter()
-//	fmt.Println(aa, ss, bb)
-//
-//	//验证欧拉公式
-//	euler()
-//
-//	triangle()
-//
-//	consts()
-//
-//	enums()
-//}
+func main() {
+	fmt.Println("Hello world")
+	variableZeroValue()
+	variableInitialValue()
+	variableTypeDeduction()
+	variableShorter()
+	fmt.Println(aa, ss, bb)
+
+	//验证欧拉公式
+	euler()
+
+	triangle()
+
+	consts()
+
+	enums()
+}
 
 /**
 内建变量类型
