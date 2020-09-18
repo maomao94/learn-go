@@ -38,4 +38,10 @@ func main() {
 使用utf8.RuneCountInString获得字符的数量
 使用len获得字节长度
 使用[]byte获得字节
+
+其他字符串操作
+1.Fields,Split,Join
+2.Contains,Index
+3.ToLower,ToUpper
+4.Trim,TrimRight,TrimLeft
 */
