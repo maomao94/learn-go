@@ -29,15 +29,6 @@ func (node *Node) SetValue(value int) {
 	node.Value = value
 }
 
-func (node *Node) Traverse() {
-	if node == nil {
-		return
-	}
-	node.Left.Traverse()
-	node.Print()
-	node.Right.Traverse()
-}
-
 func CreateNode(value int) *Node {
 	return &Node{Value: value}
 }
@@ -101,4 +92,15 @@ func main() {
 3.一致性，如有指针接收者，最好都是指针接收者
 
 值接受者 go语言特有
+
+
+包
+1.每个目录一个包
+2.main包包含可执行入口
+3.为结构定义的方法必须放在同一个包内
+4.可以是不同文件
+
+如何扩充系统类型或者别人的类型
+1.定义别名
+2.使用组合
 */

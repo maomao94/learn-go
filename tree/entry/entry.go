@@ -5,6 +5,21 @@ import (
 	"learn-go/tree"
 )
 
+type myTreeNode struct {
+	node *tree.Node
+}
+
+func (myNode *myTreeNode) postOrder() {
+	if myNode == nil || myNode.node == nil {
+		return
+	}
+	node := myTreeNode{myNode.node.Left}
+	node.postOrder()
+	treeNode := myTreeNode{myNode.node.Right}
+	treeNode.postOrder()
+	myNode.node.Print()
+}
+
 func main() {
 	var root tree.Node
 	root = tree.Node{Value: 3}
@@ -16,4 +31,6 @@ func main() {
 	fmt.Println()
 	root.Traverse()
 	fmt.Println()
+	node := myTreeNode{&root}
+	node.postOrder()
 }
