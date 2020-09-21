@@ -1,82 +1,82 @@
-package main
+package tree
 
 import (
 	"fmt"
 )
 
-type treeNode struct {
-	value       int
-	left, right *treeNode
+type Node struct {
+	Value       int
+	Left, Right *Node
 }
 
 /**
 为结构定义方法
 值接收
 */
-func (node treeNode) print() {
-	fmt.Print(node.value, "  ")
+func (node Node) Print() {
+	fmt.Print(node.Value, "  ")
 }
 
 /**
 为结构定义方法
 指针接收
 */
-func (node *treeNode) setValue(value int) {
+func (node *Node) SetValue(value int) {
 	if node == nil {
 		fmt.Println("Setting value to nil node. Ignored")
 		return
 	}
-	node.value = value
+	node.Value = value
 }
 
-func (node *treeNode) traverse() {
+func (node *Node) Traverse() {
 	if node == nil {
 		return
 	}
-	node.left.traverse()
-	node.print()
-	node.right.traverse()
+	node.Left.Traverse()
+	node.Print()
+	node.Right.Traverse()
 }
 
-func createNode(value int) *treeNode {
-	return &treeNode{value: value}
+func CreateNode(value int) *Node {
+	return &Node{Value: value}
 }
 
 func main() {
-	var root treeNode
-	root = treeNode{value: 3}
-	root.left = &treeNode{}
-	root.right = &treeNode{5, nil, nil}
-	root.right.left = new(treeNode)
-	root.left.right = createNode(2)
-	root.print()
+	var root Node
+	root = Node{Value: 3}
+	root.Left = &Node{}
+	root.Right = &Node{5, nil, nil}
+	root.Right.Left = new(Node)
+	root.Left.Right = CreateNode(2)
+	root.Print()
 	fmt.Println()
-	root.traverse()
+	root.Traverse()
 	fmt.Println()
-	root.right.left.setValue(4)
-	root.right.left.print()
+	root.Right.Left.SetValue(4)
+	root.Right.Left.Print()
 	fmt.Println()
-	nodes := []treeNode{
-		{value: 3},
+	nodes := []Node{
+		{Value: 3},
 		{},
 		{6, nil, &root},
 	}
 	fmt.Println(nodes)
 
 	pRoot := &root
-	pRoot.print()
+	pRoot.Print()
 	fmt.Println()
-	pRoot.setValue(200)
-	pRoot.print()
+	pRoot.SetValue(200)
+	pRoot.Print()
 	fmt.Println()
-	root.print()
+	root.Print()
 
-	var nilPRoot *treeNode
-	nilPRoot.setValue(200)
+	var nilPRoot *Node
+	nilPRoot.SetValue(200)
 	nilPRoot = &root
-	nilPRoot.setValue(300)
-	nilPRoot.print()
-	root.print()
+	nilPRoot.SetValue(300)
+	nilPRoot.Print()
+	root.Print()
 }
 
 /**
