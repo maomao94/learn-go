@@ -14,4 +14,16 @@ func main() {
 	fmt.Println(q.IsEmpty())
 	fmt.Println(q.Pop())
 	fmt.Println(q.IsEmpty())
+	fmt.Println("---------")
+	qi := queue.QueueI{"a"}
+	qi.Push("abd")
+	qi.Push("abdc")
+	qi.Push1("abdce")
+	fmt.Println(qi.Pop())
+	fmt.Println(qi.Pop())
+	fmt.Println(qi.IsEmpty())
+	fmt.Println(qi.Pop())
+	fmt.Println(qi.IsEmpty())
+	fmt.Println(qi.Pop())
+	fmt.Println(qi.IsEmpty())
 }
