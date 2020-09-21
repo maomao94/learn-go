@@ -5,6 +5,7 @@ import (
 	"learn-go/tree"
 )
 
+//组合方式扩展
 type myTreeNode struct {
 	node *tree.Node
 }
