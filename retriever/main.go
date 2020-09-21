@@ -41,19 +41,19 @@ func session(s RetrieverPoster) string {
 		map[string]string{
 			"name":     "hehanpeng",
 			"course":   "golang",
-			"contents": "another faked",
+			"contents": "another session faked",
 		})
 	return s.Get(url)
 }
 
 func main() {
 	var r Retriever
-	r = mock.Retriever{"this is a fake"}
+	r = &mock.Retriever{"this is a fake"}
 	fmt.Printf("%T %v\n", r, r)
 	inspect(r)
 	fmt.Println(download(r))
 	fmt.Println("Try a session")
-	sr := mock.Retriever{"this is a fake session"}
+	sr := &mock.Retriever{"this is a fake session"}
 	fmt.Println(session(sr))
 	r = &real.Retriever{
 		UserAgent: "Mozilla/5.0",
@@ -73,7 +73,7 @@ func main() {
 
 func inspect(r Retriever) {
 	switch v := r.(type) {
-	case mock.Retriever:
+	case *mock.Retriever:
 		fmt.Println("Content:", v.Contents)
 	case *real.Retriever:
 		fmt.Println("UserAgent:", v.UserAgent)
