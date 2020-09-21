@@ -1,4 +1,4 @@
-package main
+package entry
 
 import (
 	"fmt"
@@ -28,17 +28,30 @@ func (myNode *myTreeNode) postOrder() {
 	myNode.Print()
 }
 
+func (myTreeNode *myTreeNode) Traverse() {
+	fmt.Println("this method is shadowed")
+}
+
 func main() {
-	var root tree.Node
-	root = tree.Node{Value: 3}
+	//var root tree.Node
+	//root = tree.Node{Value: 3}
+	root := myTreeNode{&tree.Node{Value: 3}} //修改 使用内嵌
 	root.Left = &tree.Node{}
 	root.Right = &tree.Node{5, nil, nil}
 	root.Right.Left = new(tree.Node)
 	root.Left.Right = tree.CreateNode(2)
 	root.Print()
-	fmt.Println()
+	fmt.Println("root.Traversal")
 	root.Traverse()
+	fmt.Println("root.Node.Traversal")
+	root.Node.Traverse()
 	fmt.Println()
-	node := myTreeNode{&root}
-	node.postOrder()
+	root.postOrder()
+	//node := myTreeNode{&root}
+	//node.postOrder()
+	//fmt.Println()
+
+	//父类指针不能指向子类
+	//var baseRoot *tree.Node
+	//baseRoot := &root
 }
