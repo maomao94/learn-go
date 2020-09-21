@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"learn-go/interface/testing"
+	"learn-go/retriever/testing"
 	"net/http"
 )
 
