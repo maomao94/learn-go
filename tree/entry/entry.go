@@ -5,20 +5,27 @@ import (
 	"learn-go/tree"
 )
 
-//组合方式扩展
+//组合方式扩展  Embedding 内嵌
 type myTreeNode struct {
-	node *tree.Node
+	//node *tree.Node
+	*tree.Node //Embedding
 }
 
 func (myNode *myTreeNode) postOrder() {
-	if myNode == nil || myNode.node == nil {
+	if myNode == nil || myNode.Node == nil {
 		return
 	}
-	node := myTreeNode{myNode.node.Left}
-	node.postOrder()
-	treeNode := myTreeNode{myNode.node.Right}
-	treeNode.postOrder()
-	myNode.node.Print()
+	//left := myTreeNode{myNode.node.Left}
+	//left.postOrder()
+	//right := myTreeNode{myNode.node.Right}
+	//right.postOrder()
+	//myNode.node.Print()
+
+	left := myTreeNode{myNode.Left}
+	left.postOrder()
+	right := myTreeNode{myNode.Right}
+	right.postOrder()
+	myNode.Print()
 }
 
 func main() {
