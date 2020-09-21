@@ -11,8 +11,39 @@ type Retriever interface {
 	Get(url string) string
 }
 
+type Poster interface {
+	Post(url string,
+		form map[string]string) string
+}
+
 func download(r Retriever) string {
 	return r.Get("http://www.baidu.com")
+}
+
+func post(poster Poster) {
+	poster.Post("http://www.baidu.com",
+		map[string]string{
+			"name":   "hehanpeng",
+			"course": "golang",
+		})
+}
+
+type RetrieverPoster interface {
+	Retriever
+	Poster
+	//Connect(ip string)
+}
+
+const url = "http://www.baidu.com"
+
+func session(s RetrieverPoster) string {
+	s.Post(url,
+		map[string]string{
+			"name":     "hehanpeng",
+			"course":   "golang",
+			"contents": "another faked",
+		})
+	return s.Get(url)
 }
 
 func main() {
@@ -21,6 +52,9 @@ func main() {
 	fmt.Printf("%T %v\n", r, r)
 	inspect(r)
 	fmt.Println(download(r))
+	fmt.Println("Try a session")
+	sr := mock.Retriever{"this is a fake session"}
+	fmt.Println(session(sr))
 	r = &real.Retriever{
 		UserAgent: "Mozilla/5.0",
 		TimeOut:   time.Minute,
