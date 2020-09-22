@@ -31,7 +31,7 @@ func post(poster Poster) {
 type RetrieverPoster interface {
 	Retriever
 	Poster
-	//Connect(ip string)
+	//String() string
 }
 
 const url = "http://www.baidu.com"
@@ -74,8 +74,8 @@ func main() {
 func inspect(r Retriever) {
 	switch v := r.(type) {
 	case *mock.Retriever:
-		fmt.Println("Content:", v.Contents)
+		fmt.Println("inspect Content:", v.Contents)
 	case *real.Retriever:
-		fmt.Println("UserAgent:", v.UserAgent)
+		fmt.Println("inspect UserAgent:", v.UserAgent)
 	}
 }

@@ -3,6 +3,7 @@ package basic
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"strconv"
 )
@@ -27,12 +28,7 @@ func printFile(filename string) {
 	if err != nil {
 		panic(err)
 	}
-
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		fmt.Println(scanner.Text())
-	}
-
+	printFileContents(file)
 }
 
 func forever() {
@@ -54,3 +50,10 @@ func main() {
 for的条件不需要括号
 for的条件可以省略初始条件，结束条件，递增表达式
 */
+
+func printFileContents(read io.Reader) {
+	scanner := bufio.NewScanner(read)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+}
