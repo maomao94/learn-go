@@ -31,6 +31,13 @@ func printFile(filename string) {
 	printFileContents(file)
 }
 
+func printFileContents(read io.Reader) {
+	scanner := bufio.NewScanner(read)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+}
+
 func forever() {
 	for {
 		fmt.Println("abc")
@@ -50,10 +57,3 @@ func main() {
 for的条件不需要括号
 for的条件可以省略初始条件，结束条件，递增表达式
 */
-
-func printFileContents(read io.Reader) {
-	scanner := bufio.NewScanner(read)
-	for scanner.Scan() {
-		fmt.Println(scanner.Text())
-	}
-}
