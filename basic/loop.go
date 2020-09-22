@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"strings"
 )
 
 /**
@@ -50,6 +51,15 @@ func main() {
 		convertToBin(13), // 1011 ---> 1101
 		convertToBin(0))
 	printFile("abc.txt")
+	s := `klkl
+asasa
+sasa
+sasa
+sasa
+
+sasa`
+	printFileContents(strings.NewReader(s))
+
 	//forever()
 }
 

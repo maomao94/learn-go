@@ -18,3 +18,6 @@
     * 标识任何类型：interface{}
     * Type Assertion
     * Type Switch
+* 特殊接口
+    * Stringer
+    * Reader/Writer
