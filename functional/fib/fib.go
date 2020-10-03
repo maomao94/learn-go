@@ -1,4 +1,4 @@
-package functional
+package fib
 
 import (
 	"bufio"
@@ -8,7 +8,7 @@ import (
 )
 
 //斐波那契数列
-func fibonacci() intGen {
+func Fibonacci() intGen {
 	a, b := 0, 1
 	return func() int {
 		a, b = b, a+b
@@ -36,7 +36,7 @@ func printFileContents(read io.Reader) {
 }
 
 func main() {
-	f := fibonacci()
+	f := Fibonacci()
 	//fmt.Println(f()) //1
 	//fmt.Println(f()) //1
 	//fmt.Println(f()) //2
