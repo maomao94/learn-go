@@ -43,3 +43,7 @@
 * 确保调用在函数结束时发生
 * 参数在defer语句时计算
 * defer列表为后进先出
+* 何时使用defer 调用
+  * Open/Close
+  * Lock/Unlock
+  * PrintHeader/PrintFooter
