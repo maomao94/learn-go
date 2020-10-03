@@ -54,4 +54,11 @@ func main() {
 	//父类指针不能指向子类
 	//var baseRoot *tree.Node
 	//baseRoot := &root
+
+	//函数式变成
+	nodeCount := 0
+	root.TraverseFunc(func(node *tree.Node) {
+		nodeCount++
+	})
+	fmt.Println("Node count:", nodeCount)
 }
