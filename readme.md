@@ -47,3 +47,7 @@
   * Open/Close
   * Lock/Unlock
   * PrintHeader/PrintFooter
+#### 错误处理
+
+  
+  
