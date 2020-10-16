@@ -2,6 +2,7 @@ package error
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"learn-go/functional/fib"
 	"os"
@@ -18,6 +19,8 @@ func tryDefer() {
 func writeFile(filename string) {
 	//file, err := os.Create(filename)
 	file, err := os.OpenFile(filename, os.O_EXCL|os.O_CREATE, 0666)
+
+	err = errors.New("this is a custom error")
 	if err != nil {
 		//panic(err)
 		//fmt.Println("Error:",err)
