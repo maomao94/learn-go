@@ -48,6 +48,15 @@
   * Lock/Unlock
   * PrintHeader/PrintFooter
 #### 错误处理
+#### panic
+* 停止当前函数执行
+* 一直向上返回，执行每一层的defer
+* 如果没有遇见recover，程序就退出
+#### recover
+* 仅在defer调用中使用
+* 获取panic的值
+* 如果无法处理，可重新panic
+
 
   
   
