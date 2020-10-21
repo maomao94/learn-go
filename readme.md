@@ -56,6 +56,10 @@
 * 仅在defer调用中使用
 * 获取panic的值
 * 如果无法处理，可重新panic
+#### error vs panic
+* 意料之中：使用error。如文件打不开
+* 意料之外的：使用panic。如：数组越界
+
 
 
   
