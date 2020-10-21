@@ -10,15 +10,16 @@ import (
 type appHandler func(writer http.ResponseWriter,
 	request *http.Request) error
 
-func errWrapper(handler appHandler) func(w http.ResponseWriter,
-	r *http.Request) {
+func errWrapper(handler appHandler) func(writer http.ResponseWriter,
+	request *http.Request) {
 	return func(writer http.ResponseWriter,
 		request *http.Request) {
 		defer func() {
-			r := recover()
-			log.Printf("Panic: %v", r)
-			http.Error(writer,
-				http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			if r := recover(); r != nil {
+				log.Printf("Panic: %v", r)
+				http.Error(writer,
+					http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			}
 		}()
 		err := handler(writer, request)
 		if err != nil {
