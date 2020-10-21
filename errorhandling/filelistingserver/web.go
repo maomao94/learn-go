@@ -25,6 +25,10 @@ func errWrapper(handler appHandler) func(writer http.ResponseWriter,
 		if err != nil {
 			log.Printf("Error Handling request: %s",
 				err.Error())
+			if userErr, ok := err.(userError); ok {
+				http.Error(writer, userErr.Message(), http.StatusBadRequest)
+				return
+			}
 			code := http.StatusOK
 			switch {
 			case os.IsExist(err):
@@ -39,6 +43,11 @@ func errWrapper(handler appHandler) func(writer http.ResponseWriter,
 				code)
 		}
 	}
+}
+
+type userError interface {
+	error
+	Message() string
 }
 
 func main() {
