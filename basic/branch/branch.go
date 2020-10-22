@@ -1,4 +1,4 @@
-package basic
+package branch
 
 import (
 	"fmt"
@@ -49,7 +49,7 @@ func grade(score int) string {
 	return g
 }
 
-func main() {
+func branch() {
 	const filename = "abc.txt"
 	//contents, err := ioutil.ReadFile(filename)
 	//if err != nil {

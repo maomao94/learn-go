@@ -34,7 +34,7 @@ func lengthOfNonRepeatingSubStr2(s string) int {
 	return maxLength
 }
 
-func main() {
+func nonrepeating() {
 	fmt.Println(lengthOfNonRepeatingSubStr("abcabcbb"))
 	fmt.Println(lengthOfNonRepeatingSubStr("bbbbbbb"))
 	fmt.Println(lengthOfNonRepeatingSubStr("pwwwwkew"))

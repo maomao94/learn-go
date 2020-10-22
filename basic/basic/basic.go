@@ -53,9 +53,13 @@ func euler() {
 
 func triangle() {
 	var a, b int = 3, 4
+	fmt.Println(calTriangle(a, b))
+}
+
+func calTriangle(a, b int) int {
 	var c int
 	c = int(math.Sqrt(float64(a*a + b*b)))
-	fmt.Println(c)
+	return c
 }
 
 func consts() {
@@ -93,7 +97,7 @@ func enums() {
 	fmt.Println(b, kb, mb, gb, tb, pb)           //0 4 2 3
 }
 
-func main() {
+func basic() {
 	fmt.Println("Hello world")
 	variableZeroValue()
 	variableInitialValue()

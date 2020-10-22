@@ -1,4 +1,4 @@
-package basic
+package loop
 
 import (
 	"bufio"
