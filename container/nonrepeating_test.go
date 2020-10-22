@@ -24,3 +24,16 @@ func TestSubstr(t *testing.T) {
 	}
 
 }
+
+func BenchmarkSubstr(b *testing.B) {
+	s := "jkdajkdkadkdjkdjkadhjkjak"
+	ans := 8
+
+	for i := 0; i < b.N; i++ {
+		actual := lengthOfNonRepeatingSubStr(s)
+		if actual != ans {
+			b.Errorf("got %d for input %s;"+
+				"expexted %d", actual, s, ans)
+		}
+	}
+}
