@@ -53,7 +53,7 @@ func TestErrWrapper(t *testing.T) {
 	}{
 		{errPanic, 500, "Internal Server Error"},
 		{errUserError, 400, "user error"},
-		{errNotFound, 500, "Internal Server Error"},
+		{errNotFound, 404, "Not Found"},
 		{errNotPermission, 403, "Forbidden"},
 		{errUnknown, 500, "Internal Server Error"},
 	}

@@ -31,7 +31,7 @@ func errWrapper(handler appHandler) func(writer http.ResponseWriter,
 			}
 			code := http.StatusOK
 			switch {
-			case os.IsExist(err):
+			case os.IsNotExist(err):
 				code = http.StatusNotFound
 			case os.IsPermission(err):
 				code = http.StatusForbidden
