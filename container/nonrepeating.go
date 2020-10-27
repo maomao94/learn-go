@@ -34,8 +34,10 @@ func lengthOfNonRepeatingSubStr2(s string) int {
 	return maxLength
 }
 
+var lastOccurred = make([]int, 0xffff) //65535
+
 func lengthOfNonRepeatingSubStr3(s string) int {
-	lastOccurred := make([]int, 0xffff) //65535
+	//lastOccurred := make([]int, 0xffff) //65535
 	for i := range lastOccurred {
 		lastOccurred[i] = -1
 	}
