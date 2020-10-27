@@ -52,33 +52,49 @@ func noError(writer http.ResponseWriter,
 	return nil
 }
 
-func TestErrWrapper(t *testing.T) {
-	tests := []struct {
-		h       appHandler
-		code    int
-		message string
-	}{
-		{errPanic, 500, "Internal Server Error"},
-		{errUserError, 400, "user error"},
-		{errNotFound, 404, "Not Found"},
-		{errNotPermission, 403, "Forbidden"},
-		{errUnknown, 500, "Internal Server Error"},
-		{noError, 200, "no error"},
-	}
+var tests = []struct {
+	h       appHandler
+	code    int
+	message string
+}{
+	{errPanic, 500, "Internal Server Error"},
+	{errUserError, 400, "user error"},
+	{errNotFound, 404, "Not Found"},
+	{errNotPermission, 403, "Forbidden"},
+	{errUnknown, 500, "Internal Server Error"},
+	{noError, 200, "no error"},
+}
 
+func TestErrWrapper(t *testing.T) {
 	for _, tt := range tests {
 		f := errWrapper(tt.h)
 		response := httptest.NewRecorder()
 		request := httptest.NewRequest(
 			http.MethodGet, "http://www.baidu.com", nil)
 		f(response, request)
-		b, _ := ioutil.ReadAll(response.Body)
-		body := strings.Trim(string(b), "\n")
-		if response.Code != tt.code ||
-			body != tt.message {
-			t.Errorf("expect (%d, %s); "+
-				"got (%d, %s)",
-				tt.code, tt.message, response.Code, body)
-		}
+		verifyResponse(t, response.Result(), tt.code, tt.message)
+	}
+}
+
+func TestErrWrapperInServer(t *testing.T) {
+	for _, tt := range tests {
+		f := errWrapper(tt.h)
+		server := httptest.NewServer(http.HandlerFunc(f))
+		resp, _ := http.Get(server.URL)
+		verifyResponse(t, resp, tt.code, tt.message)
+	}
+}
+
+func verifyResponse(t *testing.T, resp *http.Response,
+	expectedCode int,
+	expextedMessage string,
+) {
+	b, _ := ioutil.ReadAll(resp.Body)
+	body := strings.Trim(string(b), "\n")
+	if resp.StatusCode != expectedCode ||
+		body != expextedMessage {
+		t.Errorf("expect (%d, %s); "+
+			"got (%d, %s)",
+			expectedCode, expextedMessage, resp.StatusCode, body)
 	}
 }
