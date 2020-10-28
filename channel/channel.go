@@ -65,7 +65,10 @@ func channelClose() {
 }
 
 func main() {
+	fmt.Println("Channel as first-class citizen")
 	chanDemo()
+	fmt.Println("Buffered channel")
 	//bufferedChannel()
+	fmt.Println("Channel close and range")
 	channelClose()
 }
