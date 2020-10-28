@@ -14,12 +14,7 @@ func worker(id int, c chan int) {
 
 func createWorker(id int) chan<- int {
 	c := make(chan int)
-	go func() {
-		for {
-			//n := <-c
-			fmt.Printf("Worker %d receiver %c\n", id, <-c)
-		}
-	}()
+	go worker(id, c)
 	return c
 }
 
@@ -40,6 +35,17 @@ func chanDemo() {
 	time.Sleep(time.Millisecond)
 }
 
+func bufferedChannel() {
+	c := make(chan int, 3)
+	go worker(0, c)
+	c <- 'a'
+	c <- 'b'
+	c <- 'c'
+	//c <- 4
+	time.Sleep(time.Millisecond)
+}
+
 func main() {
-	chanDemo()
+	//chanDemo()
+	bufferedChannel()
 }
