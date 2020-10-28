@@ -73,6 +73,7 @@
     * 等待锁
     * 函数调用（有时）
     * runtime.Gosched()
+##### channel
 
 
   
