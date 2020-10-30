@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math/rand"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -13,6 +14,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	const keyRequestId = "requestId"
 	r.Use(func(context *gin.Context) {
 		s := time.Now()
 
@@ -23,11 +25,19 @@ func main() {
 			zap.String("path", context.Request.URL.Path),
 			zap.Int("status", context.Writer.Status()),
 			zap.Duration("elapsed", time.Now().Sub(s)))
+	}, func(context *gin.Context) {
+		context.Set(keyRequestId, rand.Int())
+		context.Next()
 	})
 	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
+		h := gin.H{
+			"message":    "pong",
+			keyRequestId: 1234,
+		}
+		if rid, exists := c.Get(keyRequestId); exists {
+			h[keyRequestId] = rid
+		}
+		c.JSON(200, h)
 	})
 	r.GET("/hello", func(c *gin.Context) {
 		c.String(200, "hello")
