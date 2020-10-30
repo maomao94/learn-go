@@ -4,6 +4,7 @@ import (
 	"learn-go/errorhandling/filelistingserver/filelisting"
 	"log"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
 )
 
