@@ -77,6 +77,11 @@
 * channel
 * buffered channel
 * range
+##### 广度优先搜索走迷宫
+* 用循环创建二维slice
+* 使用slice来实现队列
+* 用Fscanf 读取文件
+* 对Point的抽象
 #### 第三方http框架介绍
 * gin-gonic/gin
 * middleware的使用
