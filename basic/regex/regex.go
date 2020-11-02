@@ -12,7 +12,8 @@ emai is aaaaqq@aaa.com.aa
 `
 
 func main() {
-	re := regexp.MustCompile(`([a-zA-Z0-9]+)@([a-zA-Z0-9.]+)\.([a-zA-Z0-9]+)`)
+	re := regexp.MustCompile(
+		`([a-zA-Z0-9]+)@([a-zA-Z0-9]+)\.([a-zA-Z0-9.]+)`)
 	match := re.FindAllStringSubmatch(text, -1)
 	for _, m := range match {
 		fmt.Println(m)
