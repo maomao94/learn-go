@@ -4,11 +4,9 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"io/ioutil"
-	"net/http"
+	"learn-go/crawler/engine"
+	"learn-go/crawler/zhenai/parser"
 	"regexp"
-
-	"golang.org/x/text/transform"
 
 	"golang.org/x/text/encoding"
 
@@ -16,28 +14,33 @@ import (
 )
 
 func main() {
-	resp, err := http.Get("http://localhost:8080/mock/www.zhenai.com/zhenghun")
-	if err != nil {
-		panic(err)
-	}
-
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		fmt.Println("Error: status code", resp.StatusCode)
-		return
-	}
-
-	e := determineEncoding(resp.Body)
-
-	utf8Reader := transform.NewReader(resp.Body, e.NewDecoder())
-	all, err := ioutil.ReadAll(utf8Reader)
-	if err != nil {
-		panic(err)
-	}
-
-	printCityList(all)
+	//resp, err := http.Get("http://localhost:8080/mock/www.zhenai.com/zhenghun")
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//defer resp.Body.Close()
+	//
+	//if resp.StatusCode != http.StatusOK {
+	//	fmt.Println("Error: status code", resp.StatusCode)
+	//	return
+	//}
+	//
+	//e := determineEncoding(resp.Body)
+	//
+	//utf8Reader := transform.NewReader(resp.Body, e.NewDecoder())
+	//all, err := ioutil.ReadAll(utf8Reader)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//printCityList(all)
 	//fmt.Printf("%s\n", all)
+
+	engine.Run(engine.Request{
+		Url:        "http://localhost:8080/mock/www.zhenai.com/zhenghun",
+		ParserFunc: parser.ParseCityList,
+	})
 }
 
 func determineEncoding(
