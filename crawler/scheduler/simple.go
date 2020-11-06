@@ -16,4 +16,5 @@ func (s *SimpleScheduler) Submit(request engine.Request) {
 	go func() {
 		s.workerChan <- request
 	}()
+	//s.workerChan <- request //循环等待 死锁
 }
