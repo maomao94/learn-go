@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"learn-go/crawler/engine"
+	"learn-go/crawler/scheduler"
 	"learn-go/crawler/zhenai/parser"
 	"regexp"
 
@@ -37,7 +38,17 @@ func main() {
 	//printCityList(all)
 	//fmt.Printf("%s\n", all)
 
-	engine.Run(engine.Request{
+	//engine.SimpleEngine{}.Run(engine.Request{
+	//	Url:        "http://localhost:8080/mock/www.zhenai.com/zhenghun",
+	//	ParserFunc: parser.ParseCityList,
+	//})
+
+	e := engine.ConcurrentEngine{
+		Scheduler:   &scheduler.SimpleScheduler{},
+		WorkerCount: 1,
+	}
+
+	e.Run(engine.Request{
 		Url:        "http://localhost:8080/mock/www.zhenai.com/zhenghun",
 		ParserFunc: parser.ParseCityList,
 	})
