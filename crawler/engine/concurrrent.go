@@ -27,10 +27,12 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 		createWork(in, out)
 	}
 
+	itemCount := 0
 	for {
 		result := <-out
 		for _, item := range result.Items {
-			log.Printf("Got item: %v", item)
+			log.Printf("Got item #%d: %v", itemCount, item)
+			itemCount++
 		}
 
 		for _, request := range result.Requests {
