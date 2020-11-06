@@ -19,12 +19,12 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	out := make(chan ParseResult)
 	e.Scheduler.ConfigureMasterWorkerChan(in)
 
-	for _, r := range seeds {
-		e.Scheduler.Submit(r)
-	}
-
 	for i := 0; i < e.WorkerCount; i++ {
 		createWork(in, out)
+	}
+
+	for _, r := range seeds {
+		e.Scheduler.Submit(r)
 	}
 
 	itemCount := 0
