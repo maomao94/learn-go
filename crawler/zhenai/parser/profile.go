@@ -45,36 +45,36 @@ func ParseProfile(contents []byte, name string) engine.ParseResult {
 		profile.Age = age
 	}
 
-	//height, err := strconv.Atoi(
-	//	extractString(contents, heightRe))
-	//if err == nil {
-	//	profile.Height = height
-	//}
-	//
-	//weight, err := strconv.Atoi(
-	//	extractString(contents, weightRe))
-	//if err == nil {
-	//	profile.Weight = weight
-	//}
-	//
-	//profile.Income = extractString(
-	//	contents, incomeRe)
-	//profile.Gender = extractString(
-	//	contents, genderRe)
-	//profile.Car = extractString(
-	//	contents, carRe)
-	//profile.Education = extractString(
-	//	contents, educationRe)
-	//profile.Hokou = extractString(
-	//	contents, hokouRe)
-	//profile.House = extractString(
-	//	contents, houseRe)
-	//profile.Marriage = extractString(
-	//	contents, marriageRe)
-	//profile.Occupation = extractString(
-	//	contents, occupationRe)
-	//profile.Xinzuo = extractString(
-	//	contents, xinzuoRe)
+	height, err := strconv.Atoi(
+		extractString(contents, heightRe))
+	if err == nil {
+		profile.Height = height
+	}
+
+	weight, err := strconv.Atoi(
+		extractString(contents, weightRe))
+	if err == nil {
+		profile.Weight = weight
+	}
+
+	profile.Income = extractString(
+		contents, incomeRe)
+	profile.Gender = extractString(
+		contents, genderRe)
+	profile.Car = extractString(
+		contents, carRe)
+	profile.Education = extractString(
+		contents, educationRe)
+	profile.Hokou = extractString(
+		contents, hokouRe)
+	profile.House = extractString(
+		contents, houseRe)
+	profile.Marriage = extractString(
+		contents, marriageRe)
+	profile.Occupation = extractString(
+		contents, occupationRe)
+	profile.Xinzuo = extractString(
+		contents, xinzuoRe)
 
 	//result := engine.ParseResult{
 	//	Items: []engine.Item{

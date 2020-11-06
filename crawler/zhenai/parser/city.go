@@ -12,19 +12,16 @@ func ParseCity(contents []byte) engine.ParseResult {
 	matches := re.FindAllSubmatch(contents, -1)
 
 	result := engine.ParseResult{}
-	limit := 1
 	for _, m := range matches {
+		name := string(m[2])
 		result.Items = append(result.Items, "User "+string(m[2]))
 		result.Request = append(result.Request, engine.Request{
 			Url: string(m[1]),
-			ParserFunc: func(context []byte) engine.ParseResult {
-				return ParseProfile(contents, string(m[2]))
+			ParserFunc: func(bytes []byte) engine.ParseResult {
+				return ParseProfile(bytes, name)
 			},
+			//ParserFunc: engine.NilParser,
 		})
-		limit--
-		if limit == 0 {
-			break
-		}
 	}
 	return result
 }
