@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"learn-go/crawler/engine"
+	"learn-go/crawler/persist"
 	"learn-go/crawler/scheduler"
 	"learn-go/crawler/zhenai/parser"
 	"regexp"
@@ -51,6 +52,7 @@ func main() {
 	e := engine.ConcurrentEngine{
 		Scheduler:   &scheduler.QueuedScheduler{},
 		WorkerCount: 100,
+		ItemChan:    persist.ItemSaver(),
 	}
 
 	e.Run(engine.Request{
