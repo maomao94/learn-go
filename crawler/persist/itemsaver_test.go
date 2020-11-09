@@ -55,4 +55,11 @@ func TestSave(t *testing.T) {
 	if actual != expected {
 		t.Errorf("expected %v;but was %v", expected, actual)
 	}
+
+	_, err = client.
+		DeleteIndex("dating_profile").
+		Do(context.Background())
+	if err != nil {
+		panic(nil)
+	}
 }
