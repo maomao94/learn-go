@@ -6,6 +6,14 @@ type SimpleScheduler struct {
 	workerChan chan engine.Request
 }
 
+func (s *SimpleScheduler) WorkerReady(requests chan engine.Request) {
+	panic("implement me")
+}
+
+func (s *SimpleScheduler) Run() {
+	panic("implement me")
+}
+
 func (s *SimpleScheduler) ConfigureMasterWorkerChan(
 	requests chan engine.Request) {
 	s.workerChan = requests
