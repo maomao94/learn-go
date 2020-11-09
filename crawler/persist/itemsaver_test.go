@@ -48,7 +48,7 @@ func TestSave(t *testing.T) {
 	}
 	t.Logf("%s", resp.Source)
 	var actual model.Profile
-	err = json.Unmarshal([]byte(resp.Source), &actual)
+	err = json.Unmarshal(resp.Source, &actual)
 	if err != nil {
 		panic(err)
 	}
