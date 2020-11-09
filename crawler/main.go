@@ -43,8 +43,13 @@ func main() {
 	//	ParserFunc: parser.ParseCityList,
 	//})
 
+	//e := engine.ConcurrentEngine{
+	//	Scheduler:   &scheduler.SimpleScheduler{},
+	//	WorkerCount: 100,
+	//}
+
 	e := engine.ConcurrentEngine{
-		Scheduler:   &scheduler.SimpleScheduler{},
+		Scheduler:   &scheduler.QueuedScheduler{},
 		WorkerCount: 100,
 	}
 
