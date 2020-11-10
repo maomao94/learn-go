@@ -3,6 +3,7 @@ package main
 import (
 	"learn-go/crawler/engine"
 	"learn-go/crawler/model"
+	"learn-go/crawler_distributed/config"
 	"learn-go/crawler_distributed/rpcsupport"
 	"testing"
 	"time"
@@ -37,7 +38,7 @@ func TestItemSaver(t *testing.T) {
 		},
 	}
 	result := ""
-	client.Call("ItemSaverService.Save", item, &result)
+	client.Call(config.ItemSaverRpc, item, &result)
 
 	if err != nil || result != "ok" {
 		t.Errorf("result: %s; err: %s", result, err)
