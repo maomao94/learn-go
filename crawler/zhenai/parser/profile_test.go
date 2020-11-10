@@ -15,7 +15,7 @@ func TestParseProfile(t *testing.T) {
 		panic(err)
 	}
 
-	result := ParseProfile(contents, "http://test", "断念肉嘟嘟")
+	result := ParseProfile(contents, "http://localhost:8080/mock/album.zhenai.com/u/2219775402816308284", "断念肉嘟嘟")
 
 	if len(result.Items) != 1 {
 		t.Errorf("Result should contain 1 "+
@@ -25,9 +25,9 @@ func TestParseProfile(t *testing.T) {
 	actual := result.Items[0]
 
 	expected := engine.Item{
-		Url:  "http://test",
+		Url:  "http://localhost:8080/mock/album.zhenai.com/u/2219775402816308284",
 		Type: "zhenai",
-		Id:   "108906739",
+		Id:   "2219775402816308284",
 		Payload: model.Profile{
 			Name:       "断念肉嘟嘟",
 			Gender:     "男",

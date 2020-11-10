@@ -12,9 +12,9 @@ import (
 
 func TestSave(t *testing.T) {
 	expected := engine.Item{
-		Url:  "http://test",
+		Url:  "http://localhost:8080/mock/album.zhenai.com/u/2219775402816308284",
 		Type: "zhenai",
-		Id:   "108906739",
+		Id:   "2219775402816308284",
 		Payload: model.Profile{
 			Name:       "断念肉嘟嘟",
 			Gender:     "男",
