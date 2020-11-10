@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"learn-go/crawler_distributed/config"
 	"learn-go/crawler_distributed/persist"
 	"learn-go/crawler_distributed/rpcsupport"
 
@@ -8,7 +10,9 @@ import (
 )
 
 func main() {
-	serverRpc(":1234", "dating_profile")
+	serverRpc(
+		fmt.Sprintf(":%d", config.ItemSaverPort),
+		config.ElasticIndex)
 }
 
 func serverRpc(host, index string) error {

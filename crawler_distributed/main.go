@@ -7,6 +7,7 @@ import (
 	"learn-go/crawler/engine"
 	"learn-go/crawler/scheduler"
 	"learn-go/crawler/zhenai/parser"
+	"learn-go/crawler_distributed/config"
 	"learn-go/crawler_distributed/persist/client"
 	"regexp"
 
@@ -16,7 +17,8 @@ import (
 )
 
 func main() {
-	itemChan, err := client.ItemSaver(":1234")
+	itemChan, err := client.ItemSaver(
+		fmt.Sprintf(":%d", config.ItemSaverPort))
 	if err != nil {
 		panic(err)
 	}
