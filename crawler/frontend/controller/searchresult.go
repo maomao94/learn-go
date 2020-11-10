@@ -67,7 +67,7 @@ func (h SearchResultHandler) getSearchResult(
 	result.Query = q
 
 	resp, err := h.client.
-		Search(config.ElasticIndex).
+		Search("dating_profile").
 		Query(elastic.NewQueryStringQuery(
 			rewriteQueryString(q))).
 		From(from).
