@@ -40,7 +40,7 @@ func TestSave(t *testing.T) {
 	}
 
 	const index = "dating_profile"
-	err = save(client, index, expected)
+	err = Save(client, index, expected)
 
 	if err != nil {
 		panic(err)
