@@ -3,6 +3,7 @@ package view
 import (
 	"learn-go/crawler/engine"
 	"learn-go/crawler/frontend/model"
+	common "learn-go/crawler/model"
 	"os"
 	"testing"
 )
