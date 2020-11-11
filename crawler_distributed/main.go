@@ -8,7 +8,8 @@ import (
 	"learn-go/crawler/scheduler"
 	"learn-go/crawler/zhenai/parser"
 	"learn-go/crawler_distributed/config"
-	"learn-go/crawler_distributed/persist/client"
+	itemsaver "learn-go/crawler_distributed/persist/client"
+	worker "learn-go/crawler_distributed/worker/client"
 	"regexp"
 
 	"golang.org/x/text/encoding"
@@ -17,20 +18,26 @@ import (
 )
 
 func main() {
-	itemChan, err := client.ItemSaver(
+	itemChan, err := itemsaver.ItemSaver(
 		fmt.Sprintf(":%d", config.ItemSaverPort))
 	if err != nil {
 		panic(err)
 	}
+	processor, err := worker.CreateProcessor()
+	if err != nil {
+		panic(err)
+	}
 	e := engine.ConcurrentEngine{
-		Scheduler:   &scheduler.QueuedScheduler{},
-		WorkerCount: 100,
-		ItemChan:    itemChan,
+		Scheduler:        &scheduler.QueuedScheduler{},
+		WorkerCount:      100,
+		ItemChan:         itemChan,
+		RequestProcessor: processor,
 	}
 
 	e.Run(engine.Request{
-		Url:        "http://localhost:8080/mock/www.zhenai.com/zhenghun",
-		ParserFunc: parser.ParseCityList,
+		Url: "http://localhost:8080/mock/www.zhenai.com/zhenghun",
+		Parser: engine.NewFuncParser(
+			parser.ParseCityList, config.ParseCityList),
 	})
 }
 

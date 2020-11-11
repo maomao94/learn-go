@@ -2,6 +2,7 @@ package parser
 
 import (
 	"learn-go/crawler/engine"
+	"learn-go/crawler_distributed/config"
 	"regexp"
 )
 
@@ -30,7 +31,7 @@ func ParseCity(contents []byte, _ string) engine.ParseResult {
 			engine.Request{
 				Url: string(m[1]),
 				Parser: engine.NewFuncParser(
-					ParseCity, "ParseCity"),
+					ParseCity, config.ParseCity),
 			})
 	}
 	return result

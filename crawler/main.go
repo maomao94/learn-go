@@ -8,6 +8,7 @@ import (
 	"learn-go/crawler/persist"
 	"learn-go/crawler/scheduler"
 	"learn-go/crawler/zhenai/parser"
+	"learn-go/crawler_distributed/config"
 	"regexp"
 
 	"golang.org/x/text/encoding"
@@ -53,15 +54,16 @@ func main() {
 		panic(err)
 	}
 	e := engine.ConcurrentEngine{
-		Scheduler:   &scheduler.QueuedScheduler{},
-		WorkerCount: 100,
-		ItemChan:    itemChan,
+		Scheduler:        &scheduler.QueuedScheduler{},
+		WorkerCount:      100,
+		ItemChan:         itemChan,
+		RequestProcessor: engine.Worker,
 	}
 
 	e.Run(engine.Request{
 		Url: "http://localhost:8080/mock/www.zhenai.com/zhenghun",
 		Parser: engine.NewFuncParser(
-			parser.ParseCityList, "ParseCityList"),
+			parser.ParseCityList, config.ParseCityList),
 	})
 }
 

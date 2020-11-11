@@ -1,5 +1,7 @@
 package engine
 
+import "learn-go/crawler_distributed/config"
+
 type ParseFunc func(
 	contents []byte, url string) ParseResult
 
@@ -35,7 +37,7 @@ func (n NilParser) Parse(
 
 func (n NilParser) Serialize() (
 	name string, args interface{}) {
-	return "NilParser", nil
+	return config.NilParser, nil
 }
 
 type FuncParser struct {
