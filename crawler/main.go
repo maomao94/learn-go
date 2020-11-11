@@ -59,8 +59,9 @@ func main() {
 	}
 
 	e.Run(engine.Request{
-		Url:        "http://localhost:8080/mock/www.zhenai.com/zhenghun",
-		ParserFunc: parser.ParseCityList,
+		Url: "http://localhost:8080/mock/www.zhenai.com/zhenghun",
+		Parser: engine.NewFuncParser(
+			parser.ParseCityList, "ParseCityList"),
 	})
 }
 

@@ -13,5 +13,5 @@ func worker(r Request) (ParseResult, error) {
 			"fetching url %s: %v", r.Url, err)
 		return ParseResult{}, err
 	}
-	return r.ParserFunc(body, r.Url), nil
+	return r.Parser.Parse(body, r.Url), nil
 }
