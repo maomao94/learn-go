@@ -9,7 +9,7 @@ import (
 
 func ServerRpc(host string, service interface{}) error {
 	rpc.Register(service)
-	listen, err := net.Listen("tcp", ":1234")
+	listen, err := net.Listen("tcp", host)
 	if err != nil {
 		return err
 	}
