@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"io"
 	"learn-go/crawler/engine"
@@ -9,21 +10,35 @@ import (
 	"learn-go/crawler/zhenai/parser"
 	"learn-go/crawler_distributed/config"
 	itemsaver "learn-go/crawler_distributed/persist/client"
+	"learn-go/crawler_distributed/rpcsupport"
 	worker "learn-go/crawler_distributed/worker/client"
+	"log"
+	"net/rpc"
 	"regexp"
+	"strings"
 
 	"golang.org/x/text/encoding"
 
 	"golang.org/x/net/html/charset"
 )
 
+var (
+	itemSaverHost = flag.String("itemsaver_hots", "", "itemsaver host")
+
+	workerHost = flag.String("worker_host", "",
+		"worker_host")
+)
+
 func main() {
+	flag.Parse()
 	itemChan, err := itemsaver.ItemSaver(
-		fmt.Sprintf(":%d", config.ItemSaverPort))
+		fmt.Sprintf(":%d", *itemSaverHost))
 	if err != nil {
 		panic(err)
 	}
-	processor, err := worker.CreateProcessor()
+
+	pool := createClientPool(strings.Split(*workerHost, ","))
+	processor := worker.CreateProcessor(pool)
 	if err != nil {
 		panic(err)
 	}
@@ -58,4 +73,27 @@ func printCityList(content []byte) {
 		fmt.Printf("City: %s,URL: %s\n", m[2], m[1])
 	}
 	fmt.Printf("Matches found: %d\n", len(matches))
+}
+
+func createClientPool(host []string) chan *rpc.Client {
+	var clients []*rpc.Client
+	for _, h := range host {
+		client, err := rpcsupport.NewClient(h)
+		if err == nil {
+			clients = append(clients, client)
+			log.Printf("Connected to %s", h)
+		} else {
+			log.Printf("error connecting to %s: %v",
+				h, err)
+		}
+	}
+	out := make(chan *rpc.Client)
+	go func() {
+		for {
+			for _, client := range clients {
+				out <- client
+			}
+		}
+	}()
+	return out
 }
