@@ -9,5 +9,5 @@ require (
 	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
 	golang.org/x/text v0.3.4
-	golang.org/x/tools v0.0.0-20200918232735-d647fc253266 // indirect
+	golang.org/x/tools v0.0.0-20201111224557-41a3a589386c // indirect
 )
