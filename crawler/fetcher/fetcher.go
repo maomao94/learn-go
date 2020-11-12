@@ -15,10 +15,11 @@ import (
 	"golang.org/x/text/transform"
 )
 
-var rateLimiter = time.Tick(1000 * time.Microsecond)
+var rateLimiter = time.Tick(10 * time.Microsecond)
 
 func Fetch(url string) ([]byte, error) {
 	<-rateLimiter
+	log.Printf("Fetching url %s", url)
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
