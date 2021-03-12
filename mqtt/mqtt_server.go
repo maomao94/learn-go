@@ -1,12 +1,11 @@
-package mqtt
+package mqtt_server
 
 import (
 	"fmt"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"log"
 	"os"
 	"time"
-
-	"github.com/eclipse/paho.mqtt.golang"
 )
 
 var f mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
