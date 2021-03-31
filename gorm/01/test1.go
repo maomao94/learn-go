@@ -17,4 +17,20 @@ func main() {
 	fmt.Println(user.ID)
 	fmt.Println(result.Error)
 	fmt.Println(result.RowsAffected)
+
+	//用指定的字段创建记录
+
+	//创建记录并更新给出的字段
+	user.ID = 0
+	result = db.Select("Name", "Age", "CreatedAt").Create(&user)
+	fmt.Println(user.ID)
+	fmt.Println(result.Error)
+	fmt.Println(result.RowsAffected)
+
+	//创建记录并更新未给出的字段。
+	user.ID = 0
+	result = db.Omit("Name", "Age", "CreatedAt").Create(&user)
+	fmt.Println(user.ID)
+	fmt.Println(result.Error)
+	fmt.Println(result.RowsAffected)
 }
