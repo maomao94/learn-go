@@ -45,6 +45,7 @@ func Gorm() *gorm.DB {
 	m.Username = "root"
 	m.Password = "123456"
 	m.Dbname = "testgorm"
+	m.Config = "charset=utf8mb4&parseTime=True&loc=Local"
 	dsn := m.Username + ":" + m.Password + "@tcp(" + m.Path + ")/" + m.Dbname + "?" + m.Config
 	mysqlConfig := mysql.Config{
 		DSN:                       dsn,   // DSN data source name
