@@ -219,6 +219,96 @@ func main() {
 	db.Table("users").Select("name, sum(age) as total").Group("name").Having("total >= ?", 10).Scan(&result1)
 	// Distinct
 	db.Where("name is not null").Distinct("name", "age").Order("name, age desc").Find(&users)
+
+	//###################高级查询############################
+	// Locking (FOR UPDATE)
+	db.Clauses(clause.Locking{Strength: "UPDATE"}).Find(&users)
+	// SELECT * FROM `users` FOR UPDATE
+
+	db.Clauses(clause.Locking{
+		Strength: "SHARE",
+		Table:    clause.Table{Name: clause.CurrentTable},
+	}).Find(&users)
+	// SELECT * FROM `users` FOR SHARE OF `users`
+
+	// 子查询
+	//db.Where("amount > (?)", db.Table("orders").Select("AVG(amount)")).Find(&orders)
+	// SELECT * FROM "orders" WHERE amount > (SELECT AVG(amount) FROM "orders");
+
+	//subQuery := db.Select("AVG(age)").Where("name LIKE ?", "name%").Table("users")
+	//db.Select("AVG(age) as avgage").Group("name").Having("AVG(age) > (?)", subQuery).Find(&results)
+	// SELECT AVG(age) as avgage FROM `users` GROUP BY `name` HAVING AVG(age) > (SELECT AVG(age) FROM `users` WHERE name LIKE "name%")
+
+	// From 子查询
+	//db.Table("(?) as u", db.Model(&User{}).Select("name", "age")).Where("age = ?", 18).Find(&User{})
+	// SELECT * FROM (SELECT `name`,`age` FROM `users`) as u WHERE `age` = 18
+
+	//subQuery1 := db.Model(&User{}).Select("name")
+	//subQuery2 := db.Model(&Pet{}).Select("name")
+	//db.Table("(?) as u, (?) as p", subQuery1, subQuery2).Find(&User{})
+	// SELECT * FROM (SELECT `name` FROM `users`) as u, (SELECT `name` FROM `pets`) as p
+
+	// Group 条件
+	//db.Where(
+	//db.Where("pizza = ?", "pepperoni").Where(db.Where("size = ?", "small").Or("size = ?", "medium")),
+	//).Or(
+	//db.Where("pizza = ?", "hawaiian").Where("size = ?", "xlarge"),
+	//).Find(&Pizza{})
+	// SELECT * FROM `pizzas` WHERE (pizza = "pepperoni" AND (size = "small" OR size = "medium")) OR (pizza = "hawaiian" AND size = "xlarge")
+
+	// 命名参数
+	//db.Where("name1 = @name OR name2 = @name", sql.Named("name", "jinzhu")).Find(&user)
+	// SELECT * FROM `users` WHERE name1 = "jinzhu" OR name2 = "jinzhu"
+
+	//db.Where("name1 = @name OR name2 = @name", map[string]interface{}{"name": "jinzhu"}).First(&user)
+	// SELECT * FROM `users` WHERE name1 = "jinzhu" OR name2 = "jinzhu" ORDER BY `users`.`id` LIMIT 1
+
+	// Find 至 map
+	resultMap := make(map[string]interface{})
+	db.Model(&model.User{}).First(&resultMap, "id = ?", 174)
+
+	var resultMaps []map[string]interface{}
+	db.Table("users").Find(&resultMaps)
+
+	// FirstOrInit
+	// 未找到 user，根据给定的条件初始化 struct
+	var u model.User
+	db.FirstOrInit(&u, model.User{Name: "non_existing"})
+	// user -> User{Name: "non_existing"}
+
+	// 找到了 `name` = `jinzhu` 的 user
+	db.Where(model.User{Name: "jinzhu"}).FirstOrInit(&user)
+	// user -> User{ID: 111, Name: "Jinzhu", Age: 18}
+
+	// 找到了 `name` = `jinzhu` 的 user
+	db.FirstOrInit(&user, map[string]interface{}{"name": "jinzhu"})
+	// user -> User{ID: 111, Name: "Jinzhu", Age: 18}
+
+	// 未找到 user，则根据给定的条件以及 Attrs 初始化 user
+	db.Where(model.User{Name: "non_existing"}).Attrs(model.User{Age: 20}).FirstOrInit(&user)
+	// SELECT * FROM USERS WHERE name = 'non_existing' ORDER BY id LIMIT 1;
+	// user -> User{Name: "non_existing", Age: 20}
+
+	// 未找到 user，则根据给定的条件以及 Attrs 初始化 user
+	db.Where(model.User{Name: "non_existing"}).Attrs("age", 20).FirstOrInit(&user)
+	// SELECT * FROM USERS WHERE name = 'non_existing' ORDER BY id LIMIT 1;
+	// user -> User{Name: "non_existing", Age: 20}
+
+	// 找到了 `name` = `jinzhu` 的 user，则忽略 Attrs
+	db.Where(model.User{Name: "Jinzhu"}).Attrs(model.User{Age: 20}).FirstOrInit(&user)
+	// SELECT * FROM USERS WHERE name = jinzhu' ORDER BY id LIMIT 1;
+	// user -> User{ID: 111, Name: "Jinzhu", Age: 18}
+
+	// 未找到 user，根据条件和 Assign 属性初始化 struct
+	db.Where(model.User{Name: "non_existing"}).Assign(model.User{Age: 20}).FirstOrInit(&user)
+	// user -> User{Name: "non_existing", Age: 20}
+
+	// 找到 `name` = `jinzhu` 的记录，依然会更新 Assign 相关的属性
+	db.Where(model.User{Name: "Jinzhu"}).Assign(model.User{Age: 20}).FirstOrInit(&user)
+	// SELECT * FROM USERS WHERE name = jinzhu' ORDER BY id LIMIT 1;
+	// user -> User{ID: 111, Name: "Jinzhu", Age: 20}
+
+	// FirstOrCreate
 	fmt.Println("complete")
 }
 
