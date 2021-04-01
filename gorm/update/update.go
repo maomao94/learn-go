@@ -76,5 +76,13 @@ func main() {
 	// 根据 map 更新
 	db.Table("users").Where("id IN ?", []int{10, 11}).Updates(map[string]interface{}{"name": "hello", "age": 18})
 	// UPDATE users SET name='hello', age=18 WHERE id IN (10, 11);
+
+	err := db.Model(&model.User{}).Update("name", "jinzhu").Error // gorm.ErrMissingWhereClause
+	fmt.Printf("failed %s\n", err.Error())
+	db.Model(&model.User{}).Where("1 = 1").Update("Birthday", time.Now())
+	// UPDATE users SET `name` = "jinzhu" WHERE 1=1
+
+	db.Exec("UPDATE users SET name = ?", "jinzhu")
+	// UPDATE users SET name = "jinzhu"
 	fmt.Println("complete")
 }
