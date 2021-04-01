@@ -57,15 +57,24 @@ func main() {
 	// UPDATE users SET name='new_name', age=0 WHERE id=111;
 
 	// Select 所有字段（查询包括零值字段的所有字段）
-	db.Model(&user).Select("*").Updates(model.User{Name: "jinzhu", Birthday: time.Now(), Age: 0, Model: gorm.Model{
+	db.Model(&user).Select("*").Updates(model.User{Name: "jinzhutest", Birthday: time.Now(), Age: 0, Model: gorm.Model{
 		CreatedAt: time.Now(),
 		ID:        user.ID,
 	}})
 
 	// Select 除 Role 外的所有字段（包括零值字段的所有字段）
-	db.Model(&user).Select("*").Omit("Birthday").Updates(model.User{Name: "jinzhu", Birthday: time.Now(), Age: 0, Model: gorm.Model{
+	db.Model(&user).Select("*").Omit("Birthday").Updates(model.User{Name: "jinzhutest1", Birthday: time.Now(), Age: 0, Model: gorm.Model{
 		CreatedAt: time.Now(),
 		ID:        user.ID,
 	}})
+
+	// 批量更新
+	// 根据 struct 更新
+	db.Model(model.User{}).Where("age = ?", "20").Updates(model.User{Name: "batchhello", Age: 18})
+	// UPDATE users SET name='hello', age=18 WHERE role = 'admin;
+
+	// 根据 map 更新
+	db.Table("users").Where("id IN ?", []int{10, 11}).Updates(map[string]interface{}{"name": "hello", "age": 18})
+	// UPDATE users SET name='hello', age=18 WHERE id IN (10, 11);
 	fmt.Println("complete")
 }
