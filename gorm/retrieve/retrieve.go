@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"learn-go/gorm/model"
 
+	"github.com/golang-module/carbon"
+
 	"gorm.io/gorm"
 )
 
@@ -50,4 +52,36 @@ func main() {
 	fmt.Println(result.Error)
 	fmt.Println(result.RowsAffected)
 
+	// 条件
+	// String 条件
+
+	// 获取第一条匹配的记录
+	db.Where("name = ?", "jinzhu").First(&user)
+	// SELECT * FROM users WHERE name = 'jinzhu' ORDER BY id LIMIT 1;
+
+	// 获取全部匹配的记录
+	db.Where("name <> ?", "jinzhu").Find(&users)
+	// SELECT * FROM users WHERE name <> 'jinzhu';
+
+	// IN
+	db.Where("name IN ?", []string{"jinzhu", "jinzhu 2"}).Find(&users)
+	// SELECT * FROM users WHERE name IN ('jinzhu','jinzhu 2');
+
+	// LIKE
+	db.Where("name LIKE ?", "%jin%").Find(&users)
+	// SELECT * FROM users WHERE name LIKE '%jin%';
+
+	// AND
+	db.Where("name = ? AND age >= ?", "jinzhu", "22").Find(&users)
+	// SELECT * FROM users WHERE name = 'jinzhu' AND age >= 22;
+
+	// Time
+	// 三周前
+	lastWeek := carbon.Parse(carbon.Now().ToDateString()).SubWeeks(1).ToDateTimeString() // 2020-02-08 13:14:15
+	db.Where("updated_at > ?", lastWeek).Find(&users)
+	// SELECT * FROM users WHERE updated_at > '2000-01-01 00:00:00';
+
+	// BETWEEN
+	db.Where("created_at BETWEEN ? AND ?", lastWeek, carbon.Parse(carbon.Now().ToDateString()).ToDateTimeString()).Find(&users)
+	// SELECT * FROM users WHERE created_at BETWEEN '2000-01-01 00:00:00' AND '2000-01-08 00:00:00';
 }
