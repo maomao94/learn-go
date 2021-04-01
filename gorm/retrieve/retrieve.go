@@ -180,4 +180,49 @@ func main() {
 	// SELECT * FROM users ORDER BY FIELD(id,1,2,3)
 
 	// Limit & Offset
+	db.Limit(3).Find(&users)
+	// SELECT * FROM users LIMIT 3;
+
+	var users1 []model.User
+	var users2 []model.User
+	// 通过 -1 消除 Limit 条件
+	db.Limit(10).Find(&users1).Limit(-1).Find(&users2)
+	// SELECT * FROM users LIMIT 10; (users1)
+	// SELECT * FROM users; (users2)
+
+	db.Offset(3).Find(&users)
+	// SELECT * FROM users OFFSET 3;
+
+	db.Limit(10).Offset(5).Find(&users)
+	// SELECT * FROM users OFFSET 5 LIMIT 10;
+
+	// 通过 -1 消除 Offset 条件
+	//db.Offset(10).Find(&users1).Offset(-1).Find(&users2)
+	// SELECT * FROM users OFFSET 10; (users1)
+	// SELECT * FROM users; (users2)
+
+	// Group & Having
+	var result1 []Result
+	db.Model(&model.User{}).Select("name, sum(age) as total").Where("name LIKE ?", "jin%").Group("name").Find(&result1)
+	// SELECT name, sum(age) as total FROM `users` WHERE name LIKE "jin%" GROUP BY `name`
+
+	db.Model(&model.User{}).Select("name, sum(age) as total").Group("name").Having("name = ?", "Jinzhu").Find(&result1)
+	// SELECT name, sum(age) as total FROM `users` GROUP BY `name` HAVING name = "group"
+
+	rows, _ := db.Table("users").Select("date(created_at) as date, sum(age) as ages").Group("date(created_at)").Rows()
+	for rows.Next() {
+	}
+
+	rows, _ = db.Table("users").Select("date(created_at) as date, sum(age) as ages").Group("date(created_at)").Having("ages > ?", 30).Rows()
+	for rows.Next() {
+	}
+	db.Table("users").Select("name, sum(age) as total").Group("name").Having("total >= ?", 10).Scan(&result1)
+	// Distinct
+	db.Where("name is not null").Distinct("name", "age").Order("name, age desc").Find(&users)
+	fmt.Println("complete")
+}
+
+type Result struct {
+	Name  string
+	Total int
 }
