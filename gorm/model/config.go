@@ -3,7 +3,11 @@ package model
 import (
 	"database/sql"
 	"fmt"
+	"log"
+	"os"
 	"time"
+
+	"gorm.io/gorm/logger"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -50,7 +54,17 @@ func Gorm() *gorm.DB {
 		DontSupportRenameColumn:   true,  // 用 `change` 重命名列，MySQL 8 之前的数据库和 MariaDB 不支持重命名列
 		SkipInitializeWithVersion: false, // 根据版本自动配置
 	}
-	if db, err := gorm.Open(mysql.New(mysqlConfig), &gorm.Config{}); err != nil {
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold: time.Second, // 慢 SQL 阈值
+			LogLevel:      logger.Info, // Log level
+			Colorful:      false,       // 禁用彩色打印
+		},
+	)
+	if db, err := gorm.Open(mysql.New(mysqlConfig), &gorm.Config{
+		Logger: newLogger,
+	}); err != nil {
 		//global.GVA_LOG.Error("MySQL启动异常", zap.Any("err", err))
 		//os.Exit(0)
 		//return nil
