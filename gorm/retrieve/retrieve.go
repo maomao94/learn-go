@@ -49,4 +49,5 @@ func main() {
 	// SELECT * FROM users;
 	fmt.Println(result.Error)
 	fmt.Println(result.RowsAffected)
+
 }
