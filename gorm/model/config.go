@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -16,6 +17,11 @@ type User struct {
 	MemberNumber sql.NullString
 	ActivatedAt  sql.NullTime
 	gorm.Model
+}
+
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
+	fmt.Println("BeforeCreate")
+	return
 }
 
 type Mysql struct {

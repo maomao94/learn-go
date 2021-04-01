@@ -33,4 +33,16 @@ func main() {
 	fmt.Println(user.ID)
 	fmt.Println(result.Error)
 	fmt.Println(result.RowsAffected)
+
+	//批量插入
+	var users = []model.User{{Name: "jinzhu1", Birthday: time.Now()}, {Name: "jinzhu2", Birthday: time.Now()}, {Name: "jinzhu3", Birthday: time.Now()}}
+	result = db.Create(&users)
+	for _, user := range users {
+		fmt.Println(user.ID)
+		fmt.Println(result.Error)
+		fmt.Println(result.RowsAffected)
+	}
+	users = []model.User{{Name: "jinzhu1", Birthday: time.Now()}, {Name: "jinzhu2", Birthday: time.Now()}, {Name: "jinzhu3", Birthday: time.Now()}}
+	result = db.CreateInBatches(users, 100)
+	fmt.Println(result.RowsAffected)
 }
