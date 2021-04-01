@@ -32,5 +32,14 @@ func main() {
 	db.Unscoped().Delete(&model.User{}, []int{1, 2, 3})
 	// DELETE FROM users WHERE id IN (1,2,3);
 
+	// 批量删除
+	db.Where("name LIKE ?", "%jinzhu%").Delete(&model.User{})
+	// DELETE from emails where email LIKE "%jinzhu%";
+
+	db.Delete(&model.User{}, "name LIKE ?", "%jinzhu%")
+	// DELETE from emails where email LIKE "%jinzhu%";
+
+	err := db.Delete(&model.User{}).Error // gorm.ErrMissingWhereClause
+	fmt.Printf("failed %s\n", err.Error())
 	fmt.Println("complete")
 }
