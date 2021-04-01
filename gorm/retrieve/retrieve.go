@@ -272,8 +272,15 @@ func main() {
 
 	// FirstOrInit
 	// 未找到 user，根据给定的条件初始化 struct
-	var u model.User
-	db.FirstOrInit(&u, model.User{Name: "non_existing"})
+	//var u model.User
+	fmt.Println("#####测试指针 start#####")
+	var u = new(model.User)
+	fmt.Println(u)
+	fmt.Printf("%p\n", u)
+	fmt.Println(&u)
+	fmt.Println(*u)
+	fmt.Println("#####测试指针 end#####")
+	db.FirstOrInit(u, model.User{Name: "non_existing"})
 	// user -> User{Name: "non_existing"}
 
 	// 找到了 `name` = `jinzhu` 的 user
