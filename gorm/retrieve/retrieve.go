@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"learn-go/gorm/model"
 
+	"gorm.io/gorm/clause"
+
 	"github.com/golang-module/carbon"
 
 	"gorm.io/gorm"
@@ -106,4 +108,76 @@ func main() {
 	// SELECT * FROM users WHERE age = 0;
 
 	// 内联条件
+	// SELECT * FROM users WHERE id = 23;
+	// 根据主键获取记录，如果是非整型主键
+	db.First(&user, "id = ?", "string_primary_key")
+	// SELECT * FROM users WHERE id = 'string_primary_key';
+
+	// Plain SQL
+	db.Find(&user, "name = ?", "jinzhu")
+	// SELECT * FROM users WHERE name = "jinzhu";
+
+	db.Find(&users, "name <> ? AND age > ?", "jinzhu", 20)
+	// SELECT * FROM users WHERE name <> "jinzhu" AND age > 20;
+
+	// Struct
+	db.Find(&users, model.User{Age: 20})
+	// SELECT * FROM users WHERE age = 20;
+
+	// Map
+	db.Find(&users, map[string]interface{}{"age": 20})
+	// SELECT * FROM users WHERE age = 20;
+
+	// Not条件
+	db.Not("name = ?", "jinzhu").First(&user)
+	// SELECT * FROM users WHERE NOT name = "jinzhu" ORDER BY id LIMIT 1;
+
+	// Not In
+	db.Not(map[string]interface{}{"name": []string{"jinzhu", "jinzhu 2"}}).Find(&users)
+	// SELECT * FROM users WHERE name NOT IN ("jinzhu", "jinzhu 2");
+
+	// Struct
+	db.Not(model.User{Name: "jinzhu", Age: 18}).First(&user)
+	// SELECT * FROM users WHERE name <> "jinzhu" AND age <> 18 ORDER BY id LIMIT 1;
+
+	// 不在主键切片中的记录
+	db.Not([]int64{1, 2, 3}).First(&user)
+	// SELECT * FROM users WHERE id NOT IN (1,2,3) ORDER BY id LIMIT 1;
+
+	// Or 条件
+	db.Where("role = ?", "admin").Or("role = ?", "super_admin").Find(&users)
+	// SELECT * FROM users WHERE role = 'admin' OR role = 'super_admin';
+
+	// Struct
+	db.Where("name = 'jinzhu'").Or(model.User{Name: "jinzhu 2", Age: 18}).Find(&users)
+	// SELECT * FROM users WHERE name = 'jinzhu' OR (name = 'jinzhu 2' AND age = 18);
+
+	// Map
+	db.Where("name = 'jinzhu'").Or(map[string]interface{}{"name": "jinzhu 2", "age": 18}).Find(&users)
+	// SELECT * FROM users WHERE name = 'jinzhu' OR (name = 'jinzhu 2' AND age = 18);
+
+	// 选择特定字段
+	db.Select("name", "age").Find(&users)
+	// SELECT name, age FROM users;
+
+	db.Select([]string{"name", "age"}).Find(&users)
+	// SELECT name, age FROM users;
+
+	db.Table("users").Select("COALESCE(age,?)", 42).Rows()
+	// SELECT COALESCE(age,'42') FROM users;
+
+	// Order
+	db.Order("age desc, name").Find(&users)
+	// SELECT * FROM users ORDER BY age desc, name;
+
+	// 多个 order
+	db.Order("age desc").Order("name").Find(&users)
+	// SELECT * FROM users ORDER BY age desc, name;
+
+	db.Clauses(clause.OrderBy{
+		Expression: clause.Expr{SQL: "FIELD(id,?)", Vars: []interface{}{[]int{1, 2, 3}}, WithoutParentheses: true},
+	}).Find(&model.User{})
+	// SELECT * FROM users ORDER BY FIELD(id,1,2,3)
+
+	// Limit & Offset
 }
