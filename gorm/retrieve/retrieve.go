@@ -84,4 +84,26 @@ func main() {
 	// BETWEEN
 	db.Where("created_at BETWEEN ? AND ?", lastWeek, carbon.Parse(carbon.Now().ToDateString()).ToDateTimeString()).Find(&users)
 	// SELECT * FROM users WHERE created_at BETWEEN '2000-01-01 00:00:00' AND '2000-01-08 00:00:00';
+
+	// Struct & Map 条件
+	// Struct
+	db.Where(&model.User{Name: "jinzhu", Age: 20}).First(&user)
+	// SELECT * FROM users WHERE name = "jinzhu" AND age = 20 ORDER BY id LIMIT 1;
+
+	// Map
+	db.Where(map[string]interface{}{"name": "jinzhu", "age": 20}).Find(&users)
+	// SELECT * FROM users WHERE name = "jinzhu" AND age = 20;
+
+	// 主键切片条件
+	db.Where([]int64{20, 21, 22}).Find(&users)
+	// SELECT * FROM users WHERE id IN (20, 21, 22);
+
+	// 指定结构体查询字段
+	db.Where(&model.User{Name: "jinzhu", Age: 0}, "name", "Age").Find(&users)
+	// SELECT * FROM users WHERE name = "jinzhu" AND age = 0;
+
+	db.Where(&model.User{Name: "jinzhu", Age: 0}, "Age").Find(&users)
+	// SELECT * FROM users WHERE age = 0;
+
+	// 内联条件
 }
