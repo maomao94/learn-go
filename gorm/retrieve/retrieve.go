@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"learn-go/gorm/model"
+	"time"
 
 	"gorm.io/gorm/clause"
 
@@ -316,6 +317,58 @@ func main() {
 	// user -> User{ID: 111, Name: "Jinzhu", Age: 20}
 
 	// FirstOrCreate
+	// 未找到 user，则根据给定条件创建一条新纪录
+	user = model.User{Birthday: time.Now()}
+	db.FirstOrCreate(&user, model.User{Name: "non_existing"})
+	// INSERT INTO "users" (name) VALUES ("non_existing");
+	// user -> User{ID: 112, Name: "non_existing"}
+
+	// 找到了 `name` = `jinzhu` 的 user
+	db.Where(model.User{Name: "jinzhu"}).FirstOrCreate(&user)
+	// user -> User{ID: 111, Name: "jinzhu", "Age": 18}
+
+	// 未找到 user，根据条件和 Assign 属性创建记录
+	db.Where(model.User{Name: "non_existing"}).Attrs(model.User{Age: 20}).FirstOrCreate(&user)
+	// SELECT * FROM users WHERE name = 'non_existing' ORDER BY id LIMIT 1;
+	// INSERT INTO "users" (name, age) VALUES ("non_existing", 20);
+	// user -> User{ID: 112, Name: "non_existing", Age: 20}
+
+	// 找到了 `name` = `jinzhu` 的 user，则忽略 Attrs
+	db.Where(model.User{Name: "jinzhu"}).Attrs(model.User{Age: 20}).FirstOrCreate(&user)
+	// SELECT * FROM users WHERE name = 'jinzhu' ORDER BY id LIMIT 1;
+	// user -> User{ID: 111, Name: "jinzhu", Age: 18}
+
+	// 未找到 user，根据条件和 Assign 属性创建记录
+	db.Where(model.User{Name: "non_existing"}).Assign(model.User{Age: 20}).FirstOrCreate(&user)
+	// SELECT * FROM users WHERE name = 'non_existing' ORDER BY id LIMIT 1;
+	// INSERT INTO "users" (name, age) VALUES ("non_existing", 20);
+	// user -> User{ID: 112, Name: "non_existing", Age: 20}
+
+	// 找到了 `name` = `jinzhu` 的 user，依然会根据 Assign 更新记录
+	db.Where(model.User{Name: "jinzhu"}).Assign(model.User{Age: 20}).FirstOrCreate(&user)
+	// SELECT * FROM users WHERE name = 'jinzhu' ORDER BY id LIMIT 1;
+	// UPDATE users SET age=20 WHERE id = 111;
+	// user -> User{ID: 111, Name: "jinzhu", Age: 20}
+
+	// Count
+	var count int64
+	db.Model(&model.User{}).Where("name = ?", "jinzhu").Or("name = ?", "jinzhu 2").Count(&count)
+	// SELECT count(1) FROM users WHERE name = 'jinzhu' OR name = 'jinzhu 2'
+
+	db.Model(&model.User{}).Where("name = ?", "jinzhu").Count(&count)
+	// SELECT count(1) FROM users WHERE name = 'jinzhu'; (count)
+
+	db.Table("deleted_users").Count(&count)
+	// SELECT count(1) FROM deleted_users;
+
+	// Count with Distinct
+	db.Model(&model.User{}).Distinct("name").Count(&count)
+	// SELECT COUNT(DISTINCT(`name`)) FROM `users`
+
+	db.Table("deleted_users").Select("count(distinct(name))").Count(&count)
+	// SELECT count(distinct(name)) FROM deleted_users
+
+	db.Model(&model.User{}).Group("name").Count(&count)
 	fmt.Println("complete")
 }
 
