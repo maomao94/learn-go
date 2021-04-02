@@ -14,17 +14,17 @@ import (
 func main() {
 	sc := []constant.ServerConfig{
 		{
-			IpAddr: "console.nacos.io",
-			Port:   80,
+			IpAddr: "127.0.0.1",
+			Port:   8848,
 		},
 	}
 	//or a more graceful way to create ServerConfig
 	_ = []constant.ServerConfig{
-		*constant.NewServerConfig("console.nacos.io", 80),
+		*constant.NewServerConfig("127.0.0.1", 8848),
 	}
 
 	cc := constant.ClientConfig{
-		NamespaceId:         "e525eafa-f7d7-4029-83d9-008937f9d468", //namespace id
+		NamespaceId:         "dev", //namespace id
 		TimeoutMs:           5000,
 		NotLoadCacheAtStart: true,
 		LogDir:              "/tmp/nacos/log",
@@ -35,7 +35,7 @@ func main() {
 	}
 	//or a more graceful way to create ClientConfig
 	_ = *constant.NewClientConfig(
-		constant.WithNamespaceId("e525eafa-f7d7-4029-83d9-008937f9d468"),
+		constant.WithNamespaceId("dev"),
 		constant.WithTimeoutMs(5000),
 		constant.WithNotLoadCacheAtStart(true),
 		constant.WithLogDir("/tmp/nacos/log"),
