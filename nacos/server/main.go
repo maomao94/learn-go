@@ -254,7 +254,7 @@ func main() {
 	})
 
 	ExampleServiceClient_GetAllService(client, vo.GetAllServiceInfoParam{
-		NameSpace: "0e83cc81-9d8c-4bb8-a28a-ff703187543f",
+		NameSpace: "dev",
 		PageNo:    1,
 		PageSize:  10,
 	})
