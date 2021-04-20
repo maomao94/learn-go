@@ -27,7 +27,7 @@ func ArraySource(a ...int) <-chan int {
 }
 
 func InMemSort(in <-chan int) <-chan int {
-	out := make(chan int)
+	out := make(chan int, 1024)
 	go func() {
 		a := []int{}
 		for v := range in {
@@ -48,7 +48,7 @@ func InMemSort(in <-chan int) <-chan int {
 }
 
 func Merge(int1, int2 <-chan int) <-chan int {
-	out := make(chan int)
+	out := make(chan int, 1024)
 	go func() {
 		v1, ok1 := <-int1
 		v2, ok2 := <-int2
@@ -68,7 +68,7 @@ func Merge(int1, int2 <-chan int) <-chan int {
 }
 
 func ReaderSource(reader io.Reader, chuckSize int) <-chan int {
-	out := make(chan int)
+	out := make(chan int, 1024)
 	go func() {
 		buffer := make([]byte, 8)
 		bytesRead := 0
