@@ -39,11 +39,11 @@ func main() {
 		}
 		select {
 		case n = <-c1:
-			//fmt.Println("Received from c1:", n)
-			values = append(values, n)
+			fmt.Println("Received from c1:", n)
+			values = append(values, 100+n)
 		case n = <-c2:
-			//fmt.Println("Received from c2:", n)
-			values = append(values, n)
+			fmt.Println("Received from c2:", n)
+			values = append(values, 200+n)
 		case activeWorker <- activeValue:
 			values = values[1:]
 		case <-time.After(800 * time.Millisecond):
