@@ -2,10 +2,18 @@ package pipeline
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 	"math/rand"
 	"sort"
+	"time"
 )
+
+var startTime time.Time
+
+func Init() {
+	startTime = time.Now()
+}
 
 func ArraySource(a ...int) <-chan int {
 	out := make(chan int)
@@ -25,8 +33,10 @@ func InMemSort(in <-chan int) <-chan int {
 		for v := range in {
 			a = append(a, v)
 		}
+		fmt.Println("Read done:", time.Now().Sub(startTime))
 		// sort
 		sort.Ints(a)
+		fmt.Println("InMemSort done:", time.Now().Sub(startTime))
 
 		//Output
 		for _, v := range a {
@@ -52,6 +62,7 @@ func Merge(int1, int2 <-chan int) <-chan int {
 			}
 		}
 		close(out)
+		fmt.Println("Merge done:", time.Now().Sub(startTime))
 	}()
 	return out
 }
