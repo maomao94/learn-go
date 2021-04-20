@@ -7,11 +7,16 @@ import (
 
 func main() {
 	p := pipeline.ArraySource(3, 2, 6, 7, 4)
-	for {
-		if num, ok := <-p; ok {
-			fmt.Println(num)
-		} else {
-			break
-		}
+	//for {
+	//	if num, ok := <-p; ok {
+	//		fmt.Println(num)
+	//	} else {
+	//		break
+	//	}
+	//}
+
+	// 写法2
+	for v := range p {
+		fmt.Println(v)
 	}
 }
