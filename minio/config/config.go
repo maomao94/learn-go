@@ -8,7 +8,7 @@ import (
 
 // 初始化对象存储
 func Minio() *minio.Client {
-	endpoint := "localhost"
+	endpoint := "localhost:32139"
 	accessKeyID := "AKIAIOSFODNN7EXAMPLE"
 	secretAccessKey := "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 	useSSL := true
