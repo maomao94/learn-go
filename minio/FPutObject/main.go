@@ -27,7 +27,7 @@ func main() {
 	log.Printf("Successfully created %s\n", bucketName)
 
 	// 上传一个文件。
-	objectName := "golden-oldies1.zip"
+	objectName := "golden-oldies.zip"
 	filePath := "./tmp/golden-oldies.zip"
 	contentType := "application/zip"
 
