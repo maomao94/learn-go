@@ -12,7 +12,7 @@ func main() {
 
 	// 创建一个叫mymusic的存储桶。
 	bucketName := "mymusic"
-	location := "us-east-1"
+	location := "us-east-2"
 
 	err := minioClient.MakeBucket(bucketName, location)
 	if err != nil {
@@ -27,8 +27,8 @@ func main() {
 	log.Printf("Successfully created %s\n", bucketName)
 
 	// 上传一个文件。
-	objectName := "golden-oldies.zip"
-	filePath := "/tmp/golden-oldies.zip"
+	objectName := "golden-oldies1.zip"
+	filePath := "./tmp/golden-oldies.zip"
 	contentType := "application/zip"
 
 	// 使用FPutObject上传一个zip文件。
