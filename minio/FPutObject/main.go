@@ -44,10 +44,13 @@ func main() {
 	//}
 	doneCh := make(chan struct{})
 	defer close(doneCh)
-	objectCh := minioClient.ListObjectsV2(bucketName, "2/11/2/", false, doneCh)
+	objectCh := minioClient.ListObjectsV2(bucketName, "", true, doneCh)
 	for object := range objectCh {
 		if object.Err != nil {
 			fmt.Println(object.Err)
+			return
+		}
+		if object.Key == "1/golden-oldies.zip" {
 			return
 		}
 		fmt.Println(object.Key)
