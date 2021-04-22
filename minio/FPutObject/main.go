@@ -50,9 +50,9 @@ func main() {
 			fmt.Println(object.Err)
 			return
 		}
-		if object.Key == "1/golden-oldies.zip" {
-			return
-		}
+		//if object.Key == "1/golden-oldies.zip" {
+		//	return
+		//}
 		fmt.Println(object.Key)
 	}
 	log.Printf("Successfully uploaded %s of size %d\n", objectName, n)
