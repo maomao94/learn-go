@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"learn-go/minio/config"
 	"log"
 
@@ -27,7 +28,7 @@ func main() {
 	log.Printf("Successfully created %s\n", bucketName)
 
 	// 上传一个文件。
-	objectName := "golden-oldies.zip"
+	objectName := "2/golden-oldies.zip"
 	filePath := "./tmp/golden-oldies.zip"
 	contentType := "application/zip"
 
@@ -37,5 +38,19 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	//err = minioClient.RemoveObject(bucketName, objectName)
+	//if err != nil {
+	//	log.Fatalln(err)
+	//}
+	doneCh := make(chan struct{})
+	defer close(doneCh)
+	objectCh := minioClient.ListObjectsV2(bucketName, "", false, doneCh)
+	for object := range objectCh {
+		if object.Err != nil {
+			fmt.Println(object.Err)
+			return
+		}
+		fmt.Println(object)
+	}
 	log.Printf("Successfully uploaded %s of size %d\n", objectName, n)
 }
