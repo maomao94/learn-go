@@ -28,7 +28,7 @@ func main() {
 	log.Printf("Successfully created %s\n", bucketName)
 
 	// 上传一个文件。
-	objectName := "2/golden-oldies.zip"
+	objectName := "golden-oldies1.zip"
 	filePath := "./tmp/golden-oldies.zip"
 	contentType := "application/zip"
 
@@ -44,13 +44,13 @@ func main() {
 	//}
 	doneCh := make(chan struct{})
 	defer close(doneCh)
-	objectCh := minioClient.ListObjectsV2(bucketName, "", false, doneCh)
+	objectCh := minioClient.ListObjectsV2(bucketName, "2/11/2/", false, doneCh)
 	for object := range objectCh {
 		if object.Err != nil {
 			fmt.Println(object.Err)
 			return
 		}
-		fmt.Println(object)
+		fmt.Println(object.Key)
 	}
 	log.Printf("Successfully uploaded %s of size %d\n", objectName, n)
 }
