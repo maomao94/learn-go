@@ -1,4 +1,4 @@
-package fib
+package main
 
 import (
 	"bufio"
