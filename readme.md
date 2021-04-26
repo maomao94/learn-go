@@ -1,3 +1,6 @@
+## 语雀
+https://www.yuque.com/henullundefined/knqbsx
+https://www.yuque.com/henullundefined/lcodv0
 ## GO 语言的依赖管理
 * 依赖的概念
 * 依赖管理的三个阶段 GOPATH，GOVENDOR，go mod
