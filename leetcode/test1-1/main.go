@@ -9,14 +9,14 @@ type Node struct {
 	Next  *Node
 }
 
-func iterate(headNode *Node) {
+func iterate(headNode *Node) *Node {
 	var prev, next, cur *Node
 	// 当前标记头节点
 	cur = headNode
 	for {
 		// 当标记节点的next为nil时，代表循环结束
 		if cur == nil {
-			return
+			break
 		} else {
 			// 将标记节点的next留存
 			next = cur.Next
@@ -28,8 +28,10 @@ func iterate(headNode *Node) {
 			cur = next
 		}
 	}
+	return prev
 }
 
+// 链表反转-迭代
 func main() {
 	var node5 = Node{5, nil}
 	var node4 = Node{4, &node5}
@@ -45,15 +47,6 @@ func main() {
 			cur = cur.Next
 		}
 	}
-	iterate(&node1)
-	fmt.Println("反转后")
-	cur = &node5
-	for {
-		fmt.Println(cur.Value)
-		if cur.Next == nil {
-			break
-		} else {
-			cur = cur.Next
-		}
-	}
+	node := iterate(&node1)
+	fmt.Println("反转后", node)
 }
