@@ -39,6 +39,6 @@ func pivotIndex2(nums []int) int {
 
 // 寻找数组的中心下表
 func main() {
-	//fmt.Println(pivotIndex([]int{1, 7, 3, 6, 5, 6}))
-	fmt.Println(pivotIndex2([]int{1, 2, 1}))
+	fmt.Println(pivotIndex([]int{1, 7, 3, 6, 5, 6}))
+	fmt.Println(pivotIndex2([]int{1, 7, 3, 6, 5, 6}))
 }
