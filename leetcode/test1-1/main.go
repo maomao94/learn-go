@@ -56,5 +56,4 @@ func main() {
 			cur = cur.Next
 		}
 	}
-
 }
