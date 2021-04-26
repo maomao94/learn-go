@@ -16,7 +16,8 @@ func bf(n int) int {
 }
 
 func isPrime(x int) bool {
-	for i := 2; i < x; i++ {
+	// 减少循环 开根号
+	for i := 2; i*i <= x; i++ {
 		if x%i == 0 {
 			return false
 		}
@@ -32,7 +33,8 @@ func eratosthenes(n int) int {
 	for i := 2; i < n; i++ {
 		if !isPrime[i] {
 			count++
-			for j := 2 * i; j < n; j += i {
+			// 2*i 换成i*i 减少复杂度
+			for j := i * i; j < n; j += i {
 				isPrime[j] = true
 			}
 		}
