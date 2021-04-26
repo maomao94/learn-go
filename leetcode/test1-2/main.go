@@ -7,13 +7,13 @@ type Node struct {
 	Next  *Node
 }
 
-func recursion(headNode *Node) *Node {
-	if headNode == nil || headNode.Next == nil {
-		return headNode
+func recursion(head *Node) *Node {
+	if head == nil || head.Next == nil {
+		return head
 	}
-	new_head := recursion(headNode.Next)
-	headNode.Next.Next = headNode
-	headNode.Next = nil
+	new_head := recursion(head.Next)
+	head.Next.Next = head
+	head.Next = nil
 	return new_head
 }
 
