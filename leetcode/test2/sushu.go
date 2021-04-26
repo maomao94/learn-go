@@ -42,6 +42,7 @@ func eratosthenes(n int) int {
 	return count
 }
 
+// 素数个数统计
 func main() {
 	fmt.Println(bf(100))
 	fmt.Println(eratosthenes(100))

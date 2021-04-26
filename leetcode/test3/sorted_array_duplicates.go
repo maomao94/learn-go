@@ -16,6 +16,7 @@ func removeDuplicates(nums []int) int {
 	return i + 1
 }
 
+// 删除排序数组中的重复项
 func main() {
 	fmt.Println(
 		removeDuplicates([]int{0, 1}))
