@@ -19,6 +19,23 @@ func calculate2(num int) int {
 	return recurse(arr, num)
 }
 
+// 双指针迭代
+func calculate3(num int) int {
+	if num == 0 {
+		return 0
+	}
+	if num == 1 {
+		return 1
+	}
+	low, high := 0, 1
+	for i := 2; i <= num; i++ {
+		sum := low + high
+		low = high
+		high = sum
+	}
+	return high
+}
+
 func recurse(arr []int, num int) int {
 	if num == 0 {
 		return 0
@@ -36,4 +53,5 @@ func recurse(arr []int, num int) int {
 func main() {
 	fmt.Println(calculate1(10))
 	fmt.Println(calculate2(10))
+	fmt.Println(calculate3(10))
 }
