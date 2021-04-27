@@ -40,6 +40,7 @@ func getMaxMin(nums []int) int {
 		float64(max1*max2*max3)))
 }
 
+// 三个数的最大乘积 线性扫描
 func main() {
 	fmt.Println(Sort([]int{1, 2, 3, 4, 5, 6}))
 	fmt.Println(getMaxMin([]int{1, 2, 3, 4, 5, 6}))
