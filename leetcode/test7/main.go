@@ -27,7 +27,7 @@ func solution2(nums []int, target int) []int {
 	return []int{}
 }
 
-// 两数之和
+// 两数之和-无序数组
 func main() {
 	fmt.Println(solution1([]int{1, 2, 3, 4, 5, 6}, 10))
 	fmt.Println(solution2([]int{1, 2, 3, 4, 5, 6}, 10))
