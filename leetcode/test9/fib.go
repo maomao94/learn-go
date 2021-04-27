@@ -29,7 +29,8 @@ func recurse(arr []int, num int) int {
 	if arr[num] != 0 {
 		return arr[num]
 	}
-	return recurse(arr, num-1) + recurse(arr, num-2)
+	arr[num] = recurse(arr, num-1) + recurse(arr, num-2)
+	return arr[num]
 }
 
 func main() {
