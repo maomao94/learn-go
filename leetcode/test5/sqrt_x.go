@@ -30,7 +30,7 @@ func newton(x int) int {
 
 func sqrt(i float64, x float64) float64 {
 	res := (i + x/i) / 2
-	if res == i || math.Abs(res-i) < 0.000000000001 {
+	if res == i || math.Abs(res-i) < 0.000000000000000000001 {
 		return i
 	} else {
 		return sqrt(res, x)
@@ -39,5 +39,5 @@ func sqrt(i float64, x float64) float64 {
 
 func main() {
 	fmt.Println(binarySearch(24))
-	fmt.Println(newton(25))
+	fmt.Println(newton(24))
 }
