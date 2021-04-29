@@ -23,6 +23,11 @@ func main() {
 	midorder(&node1)
 	fmt.Print("\n后序遍历-")
 	postorder(&node1)
+	fmt.Print("\n层序遍历-")
+	//list := make([]int, 12)
+	list := make([]int, 0)
+	levelorder(&node1, 1, &list)
+	fmt.Print(list, "\n")
 }
 
 // 前序遍历
@@ -54,4 +59,20 @@ func postorder(root *treeNode) {
 	postorder(root.left)
 	postorder(root.right)
 	fmt.Print(root.value)
+}
+
+// 层序遍历
+func levelorder(root *treeNode, i int, list *[]int) {
+	if root == nil {
+		return
+	}
+	length := len(*list)
+	if length <= i {
+		for j := 0; j <= i-length; j++ {
+			*list = append(*list, -1)
+		}
+	}
+	(*list)[i] = root.value
+	levelorder(root.left, 2*i, list)
+	levelorder(root.right, 2*i+1, list)
 }
