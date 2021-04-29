@@ -27,6 +27,7 @@ func change(bills []int) bool {
 	return true
 }
 
+// 柠檬水找零-贪心算法
 func main() {
 	fmt.Println(change([]int{5, 5, 20}))
 }
