@@ -30,7 +30,7 @@ func main() {
 	fmt.Print(list, "\n")
 }
 
-// 前序遍历
+// 前序遍历-递归
 func preorder(root *treeNode) {
 	if root == nil {
 		return
@@ -41,7 +41,7 @@ func preorder(root *treeNode) {
 	preorder(root.right)
 }
 
-// 中序遍历
+// 中序遍历-递归
 func midorder(root *treeNode) {
 	if root == nil {
 		return
@@ -51,7 +51,7 @@ func midorder(root *treeNode) {
 	midorder(root.right)
 }
 
-// 后序遍历
+// 后序遍历-递归
 func postorder(root *treeNode) {
 	if root == nil {
 		return
@@ -61,7 +61,7 @@ func postorder(root *treeNode) {
 	fmt.Print(root.value)
 }
 
-// 层序遍历
+// 层序遍历-递归
 func levelorder(root *treeNode, i int, list *[]int) {
 	if root == nil {
 		return
@@ -69,6 +69,7 @@ func levelorder(root *treeNode, i int, list *[]int) {
 	length := len(*list)
 	if length <= i {
 		for j := 0; j <= i-length; j++ {
+			// 扩充容量
 			*list = append(*list, -1)
 		}
 	}
