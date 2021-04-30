@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/chentaihan/container/stack"
+)
 
 type treeNode struct {
 	value int
@@ -19,6 +23,8 @@ func main() {
 	node1 := treeNode{value: 1, left: &node2, right: &node3}
 	fmt.Print("前序遍历-")
 	preorder(&node1)
+	fmt.Print("\n前序遍历-")
+	preorder2(&node1)
 	fmt.Print("\n中序遍历-")
 	midorder(&node1)
 	fmt.Print("\n后序遍历-")
@@ -39,6 +45,26 @@ func preorder(root *treeNode) {
 	fmt.Print(root.value)
 	preorder(root.left)
 	preorder(root.right)
+}
+
+// 前序遍历-迭代
+func preorder2(root *treeNode) {
+	if root != nil {
+		stack := stack.NewStackLink()
+		stack.Push(root)
+		for !stack.Empty() {
+			a, _ := stack.Pop()
+			if a != nil {
+				fmt.Print(a.(*treeNode).value)
+				if a.(*treeNode).right != nil {
+					stack.Push(a.(*treeNode).right)
+				}
+				if a.(*treeNode).left != nil {
+					stack.Push(a.(*treeNode).left)
+				}
+			}
+		}
+	}
 }
 
 // 中序遍历-递归
