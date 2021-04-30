@@ -54,14 +54,10 @@ func preorder2(root *treeNode) {
 		stack.Push(root)
 		for !stack.Empty() {
 			a, _ := stack.Pop()
-			if a != nil {
+			if a.(*treeNode) != nil {
 				fmt.Print(a.(*treeNode).value)
-				if a.(*treeNode).right != nil {
-					stack.Push(a.(*treeNode).right)
-				}
-				if a.(*treeNode).left != nil {
-					stack.Push(a.(*treeNode).left)
-				}
+				stack.Push(a.(*treeNode).right)
+				stack.Push(a.(*treeNode).left)
 			}
 		}
 	}
