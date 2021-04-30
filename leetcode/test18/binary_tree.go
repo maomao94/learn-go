@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 
+	"github.com/chentaihan/container/queue"
+
 	"github.com/chentaihan/container/stack"
 )
 
@@ -37,7 +39,9 @@ func main() {
 	//list := make([]int, 12)
 	list := make([]int, 0)
 	levelorder(&node1, 1, &list)
-	fmt.Print(list, "\n")
+	fmt.Print(list)
+	fmt.Print("\n层序遍历-")
+	levelorder2(&node1)
 }
 
 // 前序遍历-递归
@@ -105,7 +109,7 @@ func postorder(root *treeNode) {
 	fmt.Print(root.value)
 }
 
-// 后序遍历-迭代
+// 后序遍历-迭代 最麻烦的一种
 func postorder2(root *treeNode) {
 	if root != nil {
 		stack := stack.NewStackLink()
@@ -144,4 +148,18 @@ func levelorder(root *treeNode, i int, list *[]int) {
 	(*list)[i] = root.value
 	levelorder(root.left, 2*i, list)
 	levelorder(root.right, 2*i+1, list)
+}
+
+// 层序遍历-迭代
+func levelorder2(root *treeNode) {
+	q := queue.NewQueueLink()
+	q.Enqueue(root)
+	for !q.Empty() {
+		a, _ := q.Dequeue()
+		if a.(*treeNode) != nil {
+			fmt.Print(a.(*treeNode).value)
+			q.Enqueue(a.(*treeNode).left)
+			q.Enqueue(a.(*treeNode).right)
+		}
+	}
 }
