@@ -27,6 +27,8 @@ func main() {
 	preorder2(&node1)
 	fmt.Print("\n中序遍历-")
 	midorder(&node1)
+	fmt.Print("\n中序遍历-")
+	midorder2(&node1)
 	fmt.Print("\n后序遍历-")
 	postorder(&node1)
 	fmt.Print("\n层序遍历-")
@@ -71,6 +73,24 @@ func midorder(root *treeNode) {
 	midorder(root.left)
 	fmt.Print(root.value)
 	midorder(root.right)
+}
+
+// 中序遍历-迭代
+func midorder2(root *treeNode) {
+	if root != nil {
+		stack := stack.NewStackLink()
+		for !stack.Empty() || root != nil {
+			if root != nil {
+				stack.Push(root)
+				root = root.left
+			} else {
+				a, _ := stack.Pop()
+				root = a.(*treeNode)
+				fmt.Print(root.value)
+				root = root.right
+			}
+		}
+	}
 }
 
 // 后序遍历-递归
