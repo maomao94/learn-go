@@ -31,6 +31,8 @@ func main() {
 	midorder2(&node1)
 	fmt.Print("\n后序遍历-")
 	postorder(&node1)
+	fmt.Print("\n后序遍历-")
+	postorder2(&node1)
 	fmt.Print("\n层序遍历-")
 	//list := make([]int, 12)
 	list := make([]int, 0)
@@ -101,6 +103,30 @@ func postorder(root *treeNode) {
 	postorder(root.left)
 	postorder(root.right)
 	fmt.Print(root.value)
+}
+
+// 后序遍历-迭代
+func postorder2(root *treeNode) {
+	if root != nil {
+		stack := stack.NewStackLink()
+		pre := new(treeNode)
+		for !stack.Empty() || root != nil {
+			for root != nil {
+				stack.Push(root)
+				root = root.left
+			}
+			a, _ := stack.Pop()
+			root = a.(*treeNode)
+			if root.right == nil || root.right == pre {
+				fmt.Print(root.value)
+				pre = root
+				root = nil
+			} else {
+				stack.Push(root)
+				root = root.right
+			}
+		}
+	}
 }
 
 // 层序遍历-递归
