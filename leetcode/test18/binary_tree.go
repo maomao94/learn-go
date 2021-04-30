@@ -109,7 +109,7 @@ func postorder(root *treeNode) {
 func postorder2(root *treeNode) {
 	if root != nil {
 		stack := stack.NewStackLink()
-		pre := new(treeNode)
+		prev := new(treeNode)
 		for !stack.Empty() || root != nil {
 			for root != nil {
 				stack.Push(root)
@@ -117,9 +117,9 @@ func postorder2(root *treeNode) {
 			}
 			a, _ := stack.Pop()
 			root = a.(*treeNode)
-			if root.right == nil || root.right == pre {
+			if root.right == nil || root.right == prev {
 				fmt.Print(root.value)
-				pre = root
+				prev = root
 				root = nil
 			} else {
 				stack.Push(root)
