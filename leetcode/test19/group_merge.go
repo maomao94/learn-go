@@ -3,8 +3,27 @@ package main
 import "fmt"
 
 // 深度优先
-func getProvince(citys [][]int) int {
-	return 0
+func getProvince(citysConnected [][]int) int {
+	citys := len(citysConnected)
+	visited := make([]bool, citys)
+	province := 0 // 计数器
+	for i := 0; i < citys; i++ {
+		if !visited[i] {
+			// 深度优先
+			dfs(i, citys, visited, citysConnected)
+			province++
+		}
+	}
+	return province
+}
+
+func dfs(i int, citys int, visited []bool, citysConnected [][]int) {
+	for j := 0; j < citys; j++ {
+		if citysConnected[i][j] == 1 && !visited[j] {
+			visited[j] = true
+			dfs(j, citys, visited, citysConnected)
+		}
+	}
 }
 
 // 省份数量
