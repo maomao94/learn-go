@@ -45,6 +45,9 @@ func bfs(citysConnected [][]int) int {
 	return province
 }
 
+// 并查集
+
+// 深度优先
 func dfs(i int, citys int, visited []bool, citysConnected [][]int) {
 	for j := 0; j < citys; j++ {
 		if citysConnected[i][j] == 1 && !visited[j] {
