@@ -35,14 +35,14 @@ func main() {
 	if len(os.Args) > 1 {
 		name = os.Args[1]
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	r, err := global.GreeterClient.SayHello(ctx, &helloworld.HelloRequest{Name: name})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("Greeting1: %s", r.GetMessage())
-	ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel = context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 	r, err = global.GreeterClient.SayHello(ctx, &helloworld.HelloRequest{Name: name})
 	if err != nil {
