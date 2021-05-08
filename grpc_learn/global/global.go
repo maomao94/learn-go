@@ -1,8 +1,10 @@
 package global
 
 import (
+	"context"
 	"learn-go/grpc_learn/helloworld"
 	"log"
+	"time"
 
 	"google.golang.org/grpc"
 )
@@ -17,16 +19,18 @@ var (
 	GreeterClient helloworld.GreeterClient
 )
 
-func getClientConn(address string) *grpc.ClientConn {
+func initClientConn(address string) {
 	// Set up a connection to the server.
-	conn, err := grpc.Dial(address, grpc.WithBlock())
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	conn, err := grpc.DialContext(ctx, address, grpc.WithBlock(), grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
-	return conn
+	ClientConn = conn
 }
 
 func InitGrpcClient() {
-	ClientConn = getClientConn(ADDRESS)
+	initClientConn(ADDRESS)
 	GreeterClient = helloworld.NewGreeterClient(ClientConn)
 }
