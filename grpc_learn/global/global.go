@@ -1,7 +1,6 @@
 package global
 
 import (
-	"fmt"
 	"learn-go/grpc_learn/helloworld"
 	"log"
 
@@ -30,5 +29,4 @@ func getClientConn(address string) *grpc.ClientConn {
 func InitGrpcClient() {
 	ClientConn = getClientConn(ADDRESS)
 	GreeterClient = helloworld.NewGreeterClient(ClientConn)
-	fmt.Println("RegisterGreeterClient successs")
 }
