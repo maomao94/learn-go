@@ -14,7 +14,7 @@
 
 syntax = "proto3";
 
-option go_package = "grpc/helloworld";
+option go_package = "grpc_learn/helloworld";
 
 package helloworld;
 

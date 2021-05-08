@@ -21,38 +21,32 @@ package main
 
 import (
 	"context"
-	"learn-go/grpc/helloworld"
+	"learn-go/grpc_learn/global"
+	"learn-go/grpc_learn/helloworld"
 	"log"
 	"os"
 	"time"
-
-	"google.golang.org/grpc"
-)
-
-const (
-	address     = "localhost:50051"
-	defaultName = "world"
 )
 
 func main() {
-	// Set up a connection to the server.
-	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer conn.Close()
-	c := helloworld.NewGreeterClient(conn)
-
+	global.InitGrpcClient()
 	// Contact the server and print out its response.
-	name := defaultName
+	name := global.ADDRESS
 	if len(os.Args) > 1 {
 		name = os.Args[1]
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	r, err := c.SayHello(ctx, &helloworld.HelloRequest{Name: name})
+	r, err := global.GreeterClient.SayHello(ctx, &helloworld.HelloRequest{Name: name})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
-	log.Printf("Greeting: %s", r.GetMessage())
+	log.Printf("Greeting1: %s", r.GetMessage())
+	ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	r, err = global.GreeterClient.SayHello(ctx, &helloworld.HelloRequest{Name: name})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("Greeting2: %s", r.GetMessage())
 }
