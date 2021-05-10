@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"log"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
+
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
 var f mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
@@ -14,7 +17,6 @@ var f mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
 }
 
 func main() {
-	s := make(chan os.Signal, 1)
 	mqtt.DEBUG = log.New(os.Stdout, "", 0)
 	mqtt.ERROR = log.New(os.Stdout, "", 0)
 	opts := mqtt.NewClientOptions().AddBroker("tcp://localhost:1883").SetClientID("emqx_go_client")
@@ -34,17 +36,17 @@ func main() {
 		fmt.Println(token.Error())
 		os.Exit(1)
 	}
-
+	s := make(chan os.Signal, 1)
+	done := make(chan bool, 1)
+	signal.Notify(s, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
-		// 发布消息
-		c.Publish("test/1", 0, false, "Hello World")
-		c.Publish("test/2", 0, false, "Hello World")
-		c.Publish("test/3", 0, false, "Hello World")
-		c.Publish("test/4", 0, false, "Hello World")
-		c.Publish("test/5", 0, false, "Hello World")
+		sig := <-s
+		log.Println(sig)
+		done <- true
 	}()
-	<-s
-	fmt.Println("信号：", s)
+	log.Println("Server Start Awaiting Signal")
+	<-done
+	log.Println("Exiting")
 
 	//// 发布消息
 	//token := c.Publish("test/1", 0, false, "Hello World")
