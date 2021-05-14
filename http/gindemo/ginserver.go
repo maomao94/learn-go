@@ -1,10 +1,12 @@
 package main
 
 import (
+	"learn-go/http/gindemo/middleware"
 	"math/rand"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 )
 
@@ -29,6 +31,9 @@ func main() {
 		context.Set(keyRequestId, rand.Int())
 		context.Next()
 	})
+
+	r.Use(middleware.PromMiddleware(nil))
+	r.GET("/metrics", middleware.PromHandler(promhttp.Handler()))
 	r.GET("/ping", func(c *gin.Context) {
 		h := gin.H{
 			"message":    "pong",

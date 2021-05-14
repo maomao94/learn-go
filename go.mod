@@ -10,6 +10,7 @@ require (
 	github.com/minio/minio-go/v6 v6.0.57
 	github.com/nacos-group/nacos-sdk-go v1.0.7
 	github.com/olivere/elastic/v7 v7.0.22
+	github.com/prometheus/client_golang v1.10.0
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0
 	golang.org/x/net v0.0.0-20210505214959-0714010a04ed
