@@ -1,8 +1,19 @@
-package container
+package main
 
-import "fmt"
+import (
+	"fmt"
+	"learn-go/tree"
+)
 
 func main() {
+	s := map[tree.Node]string{}
+	t1 := tree.Node{Value: 1}
+	t2 := tree.Node{Value: 2}
+	s[t1] = "111"
+	s[t2] = "222"
+	fmt.Println(s[t1])
+	fmt.Println(s[t2])
+
 	m := map[string]string{
 		"name":    "hehanpeng",
 		"course":  "golang",
