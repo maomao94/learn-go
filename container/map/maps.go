@@ -7,8 +7,8 @@ import (
 
 func main() {
 	s := map[tree.Node]string{}
-	t1 := tree.Node{Value: 1}
-	t2 := tree.Node{Value: 2}
+	t1 := tree.Node{Value: 1, Left: nil}
+	t2 := tree.Node{Value: 1, Left: &t1}
 	s[t1] = "111"
 	s[t2] = "222"
 	fmt.Println(s[t1])
