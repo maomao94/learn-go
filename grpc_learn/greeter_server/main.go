@@ -24,6 +24,7 @@ import (
 	"learn-go/grpc_learn/helloworld"
 	"log"
 	"net"
+	"os"
 
 	"google.golang.org/grpc"
 )
@@ -43,12 +44,21 @@ func (s *server) SayHello(ctx context.Context, in *helloworld.HelloRequest) (*he
 }
 
 func main() {
+	ctx := context.Background()
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
 	helloworld.RegisterGreeterServer(s, &server{})
+	c := make(chan os.Signal, 1)
+	go func() {
+		for range c {
+			log.Printf("shutting down gRPC server...")
+			s.GracefulStop()
+			<-ctx.Done()
+		}
+	}()
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
