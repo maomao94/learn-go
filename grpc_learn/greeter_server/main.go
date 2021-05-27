@@ -21,7 +21,13 @@ package main
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"go.uber.org/zap"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"learn-go/grpc_learn/helloworld"
+	"learn-go/grpc_learn/helloworld/errcodepb"
 	"log"
 	"net"
 	"os"
@@ -40,7 +46,8 @@ type server struct {
 // SayHello implements helloworld.GreeterServer
 func (s *server) SayHello(ctx context.Context, in *helloworld.HelloRequest) (*helloworld.HelloReply, error) {
 	log.Printf("Received: %v", in.GetName())
-	return &helloworld.HelloReply{Message: "Hello " + in.GetName()}, nil
+	//return &helloworld.HelloReply{Message: "Hello " + in.GetName()}, nil
+	return nil, Error(errcodepb.ErrCode_LoginWechatCreateUser, errors.New("must supply Type"))
 }
 
 func main() {
@@ -62,4 +69,14 @@ func main() {
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+}
+
+// 记录grpc error信息
+func Error(code errcodepb.ErrCode, err error) error {
+	log.Println("grpc error", zap.Int32("code", int32(code)), zap.Error(err))
+	var cause string
+	if err != nil {
+		cause = err.Error()
+	}
+	return status.Error(codes.Code(code), fmt.Sprintf("error name: %s, cause: %s", errcodepb.ErrCode_name[int32(code)], cause))
 }

@@ -21,6 +21,7 @@ package main
 
 import (
 	"context"
+	"google.golang.org/grpc/status"
 	"learn-go/grpc_learn/global"
 	"learn-go/grpc_learn/helloworld"
 	"log"
@@ -39,14 +40,7 @@ func main() {
 	defer cancel()
 	r, err := global.GreeterClient.SayHello(ctx, &helloworld.HelloRequest{Name: name})
 	if err != nil {
-		log.Fatalf("could not greet: %v", err)
+		log.Fatalf("could not greet: %v", status.Code(err))
 	}
-	log.Printf("Greeting1: %s", r.GetMessage())
-	ctx, cancel = context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
-	r, err = global.GreeterClient.SayHello(ctx, &helloworld.HelloRequest{Name: name})
-	if err != nil {
-		log.Fatalf("could not greet: %v", err)
-	}
-	log.Printf("Greeting2: %s", r.GetMessage())
+	log.Printf("Greeting: %s", r.GetMessage())
 }
