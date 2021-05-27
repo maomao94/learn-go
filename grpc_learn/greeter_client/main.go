@@ -40,7 +40,7 @@ func main() {
 	defer cancel()
 	r, err := global.GreeterClient.SayHello(ctx, &helloworld.HelloRequest{Name: name})
 	if err != nil {
-		log.Fatalf("could not greet: %v", status.Code(err))
+		log.Fatalf("could not greet: %v %v", status.Code(err), err)
 	}
 	log.Printf("Greeting: %s", r.GetMessage())
 }

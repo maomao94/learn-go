@@ -47,7 +47,7 @@ type server struct {
 func (s *server) SayHello(ctx context.Context, in *helloworld.HelloRequest) (*helloworld.HelloReply, error) {
 	log.Printf("Received: %v", in.GetName())
 	//return &helloworld.HelloReply{Message: "Hello " + in.GetName()}, nil
-	return nil, Error(errcodepb.ErrCode_LoginWechatCreateUser, errors.New("must supply Type"))
+	return nil, Error(errcodepb.ErrCode_LoginWechatCreateUser, errors.New(errcodepb.ErrCode_LoginWechatCreateUser.String()))
 }
 
 func main() {
