@@ -55,6 +55,7 @@ func minDepth2(root *treeNode) int {
 	queue := QueueI{}
 	queue.Push(root)
 	for !queue.IsEmpty() {
+		// interface 不能直接判断nil
 		node := queue.Pop().(*treeNode)
 		if node.left == nil && node.right == nil {
 			return node.deep
