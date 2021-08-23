@@ -9,7 +9,8 @@ func printSlice[T any](s []T) {
 	fmt.Print("\n")
 }
 
-//go run -gcflags=-G=3 main.go
+// 泛型基本语法
+// go run -gcflags=-G=3 main.go
 func main() {
 	printSlice[int]([]int{66, 77, 88, 99, 100})
 	printSlice[float64]([]float64{1.1, 2.2, 3.3, 4.4, 5.5})
