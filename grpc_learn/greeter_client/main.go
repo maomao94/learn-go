@@ -21,12 +21,13 @@ package main
 
 import (
 	"context"
-	"google.golang.org/grpc/status"
 	"learn-go/grpc_learn/global"
 	"learn-go/grpc_learn/helloworld"
 	"log"
 	"os"
 	"time"
+
+	"google.golang.org/grpc/status"
 )
 
 func main() {
@@ -36,11 +37,11 @@ func main() {
 	if len(os.Args) > 1 {
 		name = os.Args[1]
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Microsecond)
 	defer cancel()
 	r, err := global.GreeterClient.SayHello(ctx, &helloworld.HelloRequest{Name: name})
 	if err != nil {
-		log.Fatalf("could not greet: %v %v", status.Code(err), err)
+		log.Fatalf("could not greet: code[%v] error[%v]", uint32(status.Code(err)), err)
 	}
 	log.Printf("Greeting: %s", r.GetMessage())
 }
