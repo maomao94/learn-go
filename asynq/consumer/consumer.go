@@ -1,8 +1,8 @@
 package main
 
 import (
-	"context"
 	"github.com/hibiken/asynq"
+	"learn-go/asynq/mytask"
 	"log"
 )
 
@@ -26,16 +26,8 @@ func main() {
 
 	// mux maps a type to a handler
 	mux := asynq.NewServeMux()
-	mux.HandleFunc("some:template:id", func(ctx context.Context, task *asynq.Task) error {
-		log.Println(task.Type())
-		log.Println(string(task.Payload()))
-		return nil
-	})
-	mux.HandleFunc("delay:template:id", func(ctx context.Context, task *asynq.Task) error {
-		log.Println(task.Type())
-		log.Println(string(task.Payload()))
-		return nil
-	})
+	mux.HandleFunc(mytask.TypeEmailDelivery, mytask.HandleEmailDeliveryTask)
+	mux.Handle(mytask.TypeImageResize, mytask.NewImageProcessor())
 	// ...register other handlers...
 
 	if err := srv.Run(mux); err != nil {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"learn-go/asynq/mytask"
 	"log"
 	"time"
 
@@ -18,8 +19,10 @@ func main() {
 	//            Use (*Client).Enqueue method.
 	// ------------------------------------------------------
 
-	task := asynq.NewTask("some:template:id", []byte("task"))
-	taskDelay := asynq.NewTask("delay:template:id", []byte("taskDelay"))
+	task, err := mytask.NewEmailDeliveryTask(42, "some:template:id")
+	if err != nil {
+		log.Fatalf("could not create task: %v", err)
+	}
 	info, err := client.Enqueue(task)
 	if err != nil {
 		log.Fatalf("could not enqueue task: %v", err)
@@ -31,7 +34,7 @@ func main() {
 	//            Use ProcessIn or ProcessAt option.
 	// ------------------------------------------------------------
 
-	info, err = client.Enqueue(taskDelay, asynq.ProcessIn(30*time.Minute))
+	info, err = client.Enqueue(task, asynq.ProcessIn(24*time.Hour))
 	if err != nil {
 		log.Fatalf("could not schedule task: %v", err)
 	}
@@ -41,6 +44,11 @@ func main() {
 	// Example 3: Set other options to tune task processing behavior.
 	//            Options include MaxRetry, Queue, Timeout, Deadline, Unique etc.
 	// ----------------------------------------------------------------------------
+
+	task, err = mytask.NewImageResizeTask("https://example.com/myassets/image.jpg")
+	if err != nil {
+		log.Fatalf("could not create task: %v", err)
+	}
 	info, err = client.Enqueue(task, asynq.MaxRetry(10), asynq.Timeout(3*time.Minute))
 	if err != nil {
 		log.Fatalf("could not enqueue task: %v", err)
