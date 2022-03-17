@@ -7,6 +7,7 @@ type queue[T any] []T
 func (q *queue[T]) enqueue(v T) {
 	*q = append(*q, v)
 }
+
 func (q *queue[T]) dequeue() (T, bool) {
 	if len(*q) == 0 {
 		var zero T
