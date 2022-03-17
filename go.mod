@@ -1,6 +1,6 @@
 module learn-go
 
-go 1.17
+go 1.18
 
 require (
 	github.com/chentaihan/container v0.0.0-20200806021252-5df5fc19365e
