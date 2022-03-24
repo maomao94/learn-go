@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 	"learn-go/grpc_learn/helloworld"
 	"learn-go/grpc_learn/helloworld/errcodepb"
@@ -58,6 +59,7 @@ func main() {
 	}
 	s := grpc.NewServer()
 	helloworld.RegisterGreeterServer(s, &server{})
+	reflection.Register(s)
 	c := make(chan os.Signal, 1)
 	go func() {
 		for range c {
