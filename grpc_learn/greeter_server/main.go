@@ -50,10 +50,10 @@ func (s *server) SayHello(ctx context.Context, in *helloworld.HelloRequest) (*he
 	//return nil, Error(errcodepb.ErrCode_LoginWechatCreateUser, errors.New(errcodepb.ErrCode_LoginWechatCreateUser.String()))
 }
 
-//grpcurl -plaintext localhost:50051 list
-//grpcurl -plaintext localhost:50051 describe helloworld.Greeter
-//grpcurl -plaintext localhost:50051 describe helloworld.HelloRequest
-//grpcurl -plaintext -d '{"name":"hehanpeng"}' localhost:50051 helloworld.Greeter/SayHello
+//go:generate grpcurl -plaintext localhost:50051 list
+//go:generate grpcurl -plaintext localhost:50051 describe helloworld.Greeter
+//go:generate grpcurl -plaintext localhost:50051 describe helloworld.HelloRequest
+// grpcurl -plaintext -d '{"name":"hehanpeng"}' localhost:50051 helloworld.Greeter/SayHello
 func main() {
 	ctx := context.Background()
 	lis, err := net.Listen("tcp", port)
