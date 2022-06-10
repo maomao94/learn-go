@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/zeromicro/go-zero/core/mr"
 	"time"
 )
 
@@ -18,4 +19,34 @@ func main() {
 	}
 	time.Sleep(time.Minute)
 	fmt.Println(a)
+
+	// mapreduce
+	var uids []int64
+	mr.Finish(func() error {
+		uids = append(uids, 1)
+		return nil
+	}, func() error {
+		uids = append(uids, 2)
+		return nil
+	}, func() error {
+		uids = append(uids, 3)
+		return nil
+	})
+	fmt.Println(uids)
+
+	var uidsR []int64
+	v, _ := mr.MapReduce(func(source chan<- interface{}) {
+		for i := range uids {
+			source <- uids[i]
+		}
+	}, func(item interface{}, writer mr.Writer, cancel func(error)) {
+		fmt.Println(item)
+		writer.Write(item.(int64) + 1)
+	}, func(pipe <-chan interface{}, writer mr.Writer, cancel func(error)) {
+		for item := range pipe {
+			uidsR = append(uidsR, item.(int64))
+		}
+		writer.Write(uidsR)
+	})
+	fmt.Println(v)
 }
