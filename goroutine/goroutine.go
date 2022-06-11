@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/zeromicro/go-zero/core/mr"
+	"sync"
 )
 
 func main() {
@@ -20,6 +21,8 @@ func main() {
 	//fmt.Println(a)
 
 	// mapreduce
+	var lock sync.Mutex
+	lock.Lock()
 	var uids []int64
 	mr.Finish(func() error {
 		uids = append(uids, 1)
@@ -31,6 +34,7 @@ func main() {
 		uids = append(uids, 3)
 		return nil
 	})
+	lock.Unlock()
 	fmt.Println(uids)
 	fmt.Println("##########")
 	var uidsR []int64
