@@ -21,10 +21,10 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 	"learn-go/grpc_learn/helloworld"
 	"learn-go/grpc_learn/helloworld/errcodepb"
@@ -46,10 +46,14 @@ type server struct {
 // SayHello implements helloworld.GreeterServer
 func (s *server) SayHello(ctx context.Context, in *helloworld.HelloRequest) (*helloworld.HelloReply, error) {
 	log.Printf("Received: %v", in.GetName())
-	//return &helloworld.HelloReply{Message: "Hello " + in.GetName()}, nil
-	return nil, Error(errcodepb.ErrCode_LoginWechatCreateUser, errors.New(errcodepb.ErrCode_LoginWechatCreateUser.String()))
+	return &helloworld.HelloReply{Message: "Hello " + in.GetName()}, nil
+	//return nil, Error(errcodepb.ErrCode_LoginWechatCreateUser, errors.New(errcodepb.ErrCode_LoginWechatCreateUser.String()))
 }
 
+//go:generate grpcurl -plaintext localhost:50051 list
+//go:generate grpcurl -plaintext localhost:50051 describe helloworld.Greeter
+//go:generate grpcurl -plaintext localhost:50051 describe helloworld.HelloRequest
+// grpcurl -plaintext -d '{"name":"hehanpeng"}' localhost:50051 helloworld.Greeter/SayHello
 func main() {
 	ctx := context.Background()
 	lis, err := net.Listen("tcp", port)
@@ -58,6 +62,7 @@ func main() {
 	}
 	s := grpc.NewServer()
 	helloworld.RegisterGreeterServer(s, &server{})
+	reflection.Register(s)
 	c := make(chan os.Signal, 1)
 	go func() {
 		for range c {
