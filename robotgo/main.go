@@ -7,37 +7,19 @@ import (
 )
 
 func main() {
+	findIds()
+}
+
+func findIds() {
+	// find the process id by the process name
 	fpid, err := robotgo.FindIds("Google")
 	if err == nil {
-		fmt.Println("pids... ", fpid)
-
+		fmt.Println("pids...", fpid)
 		if len(fpid) > 0 {
-			robotgo.TypeStr("Hi galaxy!", int(fpid[0]))
-			robotgo.KeyTap("a", fpid[0], "cmd")
-
-			robotgo.KeyToggle("a", fpid[0])
-			robotgo.KeyToggle("a", fpid[0], "up")
-
 			robotgo.ActivePID(fpid[0])
 
-			robotgo.Kill(fpid[0])
+			tl := robotgo.GetTitle(fpid[0])
+			fmt.Println("pid[0] title is: ", tl)
 		}
 	}
-
-	robotgo.ActiveName("chrome")
-
-	isExist, err := robotgo.PidExists(100)
-	if err == nil && isExist {
-		fmt.Println("pid exists is", isExist)
-
-		robotgo.Kill(100)
-	}
-
-	abool := robotgo.Alert("test", "robotgo")
-	if abool {
-		fmt.Println("ok@@@ ", "ok")
-	}
-
-	title := robotgo.GetTitle()
-	fmt.Println("title@@@ ", title)
 }
