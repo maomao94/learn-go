@@ -1,4 +1,4 @@
-package robotgo
+package main
 
 import (
 	"fmt"
