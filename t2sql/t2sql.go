@@ -19,7 +19,7 @@ func main() {
 		fmt.Println(err)
 	}
 	for _, v := range query {
-		b := squirrel.Insert("aaa").Columns("id", "name").Values(v.Id, v.OperationOrgName)
+		b := squirrel.Insert("aaa").Columns("id", "name").Values(v.Id, v.Vin)
 		sql, args, _ := b.ToSql()
 		sql = strings.Replace(sql, "?", "%d", 1)
 		sql = strings.Replace(sql, "?", "'%s'", 1)
