@@ -6,6 +6,7 @@ import (
 	"github.com/Masterminds/squirrel"
 	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"learn-go/t2sql/model"
+	"strings"
 )
 
 func main() {
@@ -19,7 +20,9 @@ func main() {
 	}
 	for _, v := range query {
 		b := squirrel.Insert("aaa").Columns("id", "name").Values(v.Id, v.CreateOperName)
-		sql, _, _ := b.ToSql()
-		fmt.Print(sql + "\n")
+		sql, args, _ := b.ToSql()
+		sql = strings.ReplaceAll(sql, "?", "%s")
+		query := fmt.Sprintf(sql, args)
+		fmt.Print(query + "\n")
 	}
 }
