@@ -88,3 +88,6 @@
 * gin-gonic/gin
 * middleware的使用
 * context的使用
+
+goctl model mysql datasource -url="developer:KvB4dSql@tcp(evcard-st-wan.mysql.rds.aliyuncs.com:3306)/vlms_assets" -table="t_assets_vehicle"  -dir="./model"
+
