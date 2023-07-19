@@ -16,8 +16,10 @@ require (
 	github.com/minio/minio-go/v6 v6.0.57
 	github.com/nacos-group/nacos-sdk-go v1.0.9
 	github.com/olivere/elastic/v7 v7.0.29
+	github.com/panjf2000/gnet v1.6.7
 	github.com/prometheus/client_golang v1.12.2
 	github.com/schollz/progressbar/v3 v3.8.6
+	github.com/smallnest/goframe v1.0.0
 	github.com/urfave/cli/v2 v2.3.0
 	github.com/xuri/excelize/v2 v2.6.1
 	github.com/zeromicro/go-zero v1.3.4
@@ -82,6 +84,7 @@ require (
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
 	github.com/openzipkin/zipkin-go v0.4.0 // indirect
 	github.com/otiai10/gosseract v2.2.1+incompatible // indirect
+	github.com/panjf2000/ants/v2 v2.4.7 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
@@ -104,6 +107,7 @@ require (
 	github.com/tklauser/numcpus v0.4.0 // indirect
 	github.com/toolkits/concurrent v0.0.0-20150624120057-a4371d70e3e3 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
+	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/vcaesar/gops v0.21.3 // indirect
 	github.com/vcaesar/imgo v0.30.0 // indirect
 	github.com/vcaesar/keycode v0.10.0 // indirect
@@ -126,5 +130,6 @@ require (
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
 	google.golang.org/genproto v0.0.0-20220422154200-b37d22cd5731 // indirect
 	gopkg.in/ini.v1 v1.42.0 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
