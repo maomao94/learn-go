@@ -189,7 +189,7 @@ func (c *clientEventHandler) OnTraffic(conn gnet.Conn) (action gnet.Action) {
 // 解析字节流为 Message 结构体
 func parseMessage(data []byte, msg *Message) error {
 	// 确保最小的消息长度为 18 字节（包括头部信息和 XMLLength）
-	if len(data) < 18 {
+	if len(data) < 25 {
 		return fmt.Errorf("invalid message length")
 	}
 
@@ -229,21 +229,22 @@ func parseMessage(data []byte, msg *Message) error {
 
 func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) {
 	fmt.Println("OnTick")
-	delay = 200 * time.Second
+	delay = 10 * time.Second
 	// 构造消息
 	msg := Message{
 		StartFlag:     startFlag,
 		TransmitSeq:   time.Now().Unix(),
 		ReceiveSeq:    time.Now().Unix() + 1,
 		SessionSource: 0x00,
-		XMLLength:     int32(len(xmlHeartData)),
-		XMLContent:    xmlHeartData,
+		XMLLength:     0,
+		XMLContent:    "",
 		EndFlag:       endFlag,
 	}
 
 	// 构造字节流
 	buf := new(bytes.Buffer)
 	writeBuffer(msg, buf)
+	fmt.Printf("send byte size %d\n", buf.Len())
 	if c.con != nil {
 		hexStr := hex.EncodeToString(buf.Bytes())
 		fmt.Printf("send: %s\n", hexStr)
