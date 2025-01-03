@@ -37,6 +37,17 @@ const (
     <Time>2022-01-01 12:02:34</Time>
     <Items/>
 </PatrolHost>`
+
+	xmlCallback = `<?xml version="1.0" encoding="UTF-8"?>
+<PatrolHost>
+    <SendCode>Server01</SendCode>
+    <ReceiveCode>Client01</ReceiveCode>
+    <Type>251</Type>
+    <Code/>
+    <Command>3</Command>
+    <Time>2022-01-01 12:02:34</Time>
+    <Items/>
+</PatrolHost>`
 )
 
 type Message struct {
@@ -140,6 +151,25 @@ func (c *clientEventHandler) OnOpen(_ gnet.Conn) (out []byte, action gnet.Action
 	return buf.Bytes(), gnet.None
 }
 
+func callback(msg Message, con gnet.Conn) {
+	// 构造消息
+	call := Message{
+		StartFlag:     startFlag,
+		TransmitSeq:   msg.TransmitSeq,
+		ReceiveSeq:    msg.ReceiveSeq,
+		SessionSource: 0x00,
+		XMLLength:     int32(len(xmlCallback)),
+		XMLContent:    xmlCallback,
+		EndFlag:       endFlag,
+	}
+	// 构造字节流
+	buf := new(bytes.Buffer)
+	writeBuffer(call, buf)
+	hexStr := hex.EncodeToString(buf.Bytes())
+	fmt.Printf("callback: %s\n", hexStr)
+	con.Write(buf.Bytes())
+}
+
 func (c *clientEventHandler) OnClose(_ gnet.Conn, _ error) (action gnet.Action) {
 	fmt.Println("OnClose")
 	return gnet.Shutdown
@@ -180,6 +210,10 @@ func (c *clientEventHandler) OnTraffic(conn gnet.Conn) (action gnet.Action) {
 			if err == nil {
 				// 如果解析成功，打印消息并清除已解析的数据
 				fmt.Printf("Parsed message: %+v\n", msg)
+
+				if true {
+					callback(msg, conn)
+				}
 
 				// 从 fullData 中去掉已解析的部分
 				// 25 字节头部 + XML 内容的长度字节（msg.XMLLength）
