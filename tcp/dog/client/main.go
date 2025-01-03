@@ -229,7 +229,7 @@ func parseMessage(data []byte, msg *Message) error {
 
 func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) {
 	fmt.Println("OnTick")
-	delay = 1 * time.Second
+	delay = 200 * time.Second
 	// 构造消息
 	msg := Message{
 		StartFlag:     startFlag,
