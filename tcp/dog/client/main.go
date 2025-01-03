@@ -10,6 +10,7 @@ import (
 	"log"
 	"net"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -104,6 +105,8 @@ type clientEventHandler struct {
 	ReceiveSeq  int64
 }
 
+var seq int64 // 定义一个 int64 类型的计数器
+
 func (c *clientEventHandler) OnBoot(e gnet.Engine) (action gnet.Action) {
 	fmt.Println("OnBoot")
 	return
@@ -116,11 +119,13 @@ func (c *clientEventHandler) OnShutdown(_ gnet.Engine) {
 
 func (c *clientEventHandler) OnOpen(_ gnet.Conn) (out []byte, action gnet.Action) {
 	fmt.Println("OnOpen")
+	// 原子操作：对 counter 加 1
+	c.TransmitSeq = atomic.AddInt64(&seq, 1)
 	// 构造消息
 	msg := Message{
 		StartFlag:     startFlag,
-		TransmitSeq:   c.TransmitSeq + 1,
-		ReceiveSeq:    c.ReceiveSeq,
+		TransmitSeq:   c.TransmitSeq,
+		ReceiveSeq:    0,
 		SessionSource: 0x00,
 		XMLLength:     int32(len(xmlRegisterData)),
 		XMLContent:    xmlRegisterData,
@@ -137,7 +142,7 @@ func (c *clientEventHandler) OnOpen(_ gnet.Conn) (out []byte, action gnet.Action
 
 func (c *clientEventHandler) OnClose(_ gnet.Conn, _ error) (action gnet.Action) {
 	fmt.Println("OnClose")
-	return
+	return gnet.Shutdown
 }
 
 func (c *clientEventHandler) OnTraffic(conn gnet.Conn) (action gnet.Action) {
@@ -236,29 +241,26 @@ func parseMessage(data []byte, msg *Message) error {
 
 func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) {
 	fmt.Println("OnTick")
-	delay = 10 * time.Second
+	delay = 120 * time.Second
+	// 原子操作：对 counter 加 1
+	c.TransmitSeq = atomic.AddInt64(&seq, 1)
 	// 构造消息
 	msg := Message{
 		StartFlag:     startFlag,
-		TransmitSeq:   time.Now().Unix(),
-		ReceiveSeq:    time.Now().Unix() + 1,
+		TransmitSeq:   c.TransmitSeq,
+		ReceiveSeq:    0,
 		SessionSource: 0x00,
 		XMLLength:     int32(len(xmlHeartData)),
 		XMLContent:    xmlHeartData,
 		EndFlag:       endFlag,
 	}
-
-	// 构造字节流
-	buf := new(bytes.Buffer)
-	writeBuffer(msg, buf)
-	fmt.Printf("send byte size %d\n", buf.Len())
 	if c.con != nil {
+		// 构造字节流
+		buf := new(bytes.Buffer)
+		writeBuffer(msg, buf)
 		hexStr := hex.EncodeToString(buf.Bytes())
 		fmt.Printf("send: %s\n", hexStr)
-		_, err := c.con.Write(buf.Bytes())
-		if err != nil {
-			return 0, gnet.Shutdown
-		}
+		c.con.Write(buf.Bytes())
 	}
 	return
 }
@@ -286,11 +288,11 @@ func main() {
 		log.Fatalf("Failed to start gnet client: %v", err)
 	}
 	defer cli.Stop()
+	wg.Add(1)
 	conn, err := cli.Dial("tcp", "127.0.0.1:7100")
 	if err != nil {
 		log.Fatalf("Failed to dial gnet client: %v", err)
 	}
 	clientEV.con = conn
-	wg.Add(1)
 	wg.Wait()
 }
