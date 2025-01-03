@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/panjf2000/gnet/v2"
+	"io"
 	"log"
 	"net"
 	"sync"
@@ -20,7 +21,7 @@ const (
     <SendCode>Client01</SendCode>
     <ReceiveCode>Server01</ReceiveCode>
     <Type>251</Type>
-    <Code/>
+    <Code>1222</Code>
     <Command>1</Command>
     <Time>2022-01-01 12:02:34</Time>
     <Items/>
@@ -56,7 +57,7 @@ func (m Message) String() string {
 			"  ReceiveSeq:    %d,\n"+
 			"  SessionSource: 0x%02X,\n"+
 			"  XMLLength:     %d bytes,\n"+
-			"  XMLContent:    %s,\n"+
+			"  XMLContent:    \n %s,\n"+
 			"  EndFlag:       0x%04X\n"+
 			"}",
 		m.StartFlag, m.TransmitSeq, m.ReceiveSeq, m.SessionSource, m.XMLLength, m.XMLContent, m.EndFlag)
@@ -152,6 +153,12 @@ func (c *clientEventHandler) OnTraffic(conn gnet.Conn) (action gnet.Action) {
 	for {
 		n, err := conn.Read(buf)
 		if err != nil {
+			// 判断是否是 EOF 错误
+			if err == io.EOF {
+				// 读取完成，没有更多数据
+				fmt.Println("End of file (EOF) reached.")
+				break // 或者执行其它逻辑处理
+			}
 			// 错误处理，读取数据失败时返回
 			fmt.Printf("Read error: %v\n", err)
 			return gnet.None
@@ -236,8 +243,8 @@ func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) 
 		TransmitSeq:   time.Now().Unix(),
 		ReceiveSeq:    time.Now().Unix() + 1,
 		SessionSource: 0x00,
-		XMLLength:     0,
-		XMLContent:    "",
+		XMLLength:     int32(len(xmlHeartData)),
+		XMLContent:    xmlHeartData,
 		EndFlag:       endFlag,
 	}
 
