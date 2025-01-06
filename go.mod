@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/Masterminds/squirrel v1.5.3
 	github.com/chentaihan/container v0.0.0-20200806021252-5df5fc19365e
+	github.com/duke-git/lancet/v2 v2.3.4
 	github.com/eclipse/paho.mqtt.golang v1.3.5
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-vgo/robotgo v0.100.10
@@ -25,9 +26,9 @@ require (
 	github.com/xuri/excelize/v2 v2.6.1
 	github.com/zeromicro/go-zero v1.3.4
 	go.uber.org/zap v1.21.0
-	golang.org/x/net v0.0.0-20220812174116-3211cb980234
-	golang.org/x/text v0.3.7
-	golang.org/x/tools v0.1.7
+	golang.org/x/net v0.6.0
+	golang.org/x/text v0.9.0
+	golang.org/x/tools v0.6.0
 	google.golang.org/grpc v1.46.2
 	google.golang.org/protobuf v1.28.0
 	gorm.io/driver/mysql v1.1.2
@@ -128,7 +129,7 @@ require (
 	golang.org/x/image v0.0.0-20220413100746-70e8d0d3baa9 // indirect
 	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/sys v0.25.0 // indirect
-	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
+	golang.org/x/term v0.5.0 // indirect
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
 	google.golang.org/genproto v0.0.0-20220422154200-b37d22cd5731 // indirect
 	gopkg.in/ini.v1 v1.42.0 // indirect

@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"github.com/duke-git/lancet/v2/strutil"
 	"github.com/panjf2000/gnet/v2"
 	"io"
 	"log"
@@ -156,7 +157,7 @@ func callback(msg Message, con gnet.Conn) {
 	call := Message{
 		StartFlag:     startFlag,
 		TransmitSeq:   msg.TransmitSeq,
-		ReceiveSeq:    msg.ReceiveSeq,
+		ReceiveSeq:    msg.TransmitSeq,
 		SessionSource: 0x00,
 		XMLLength:     int32(len(xmlCallback)),
 		XMLContent:    xmlCallback,
@@ -211,7 +212,7 @@ func (c *clientEventHandler) OnTraffic(conn gnet.Conn) (action gnet.Action) {
 				// 如果解析成功，打印消息并清除已解析的数据
 				fmt.Printf("Parsed message: %+v\n", msg)
 
-				if true {
+				if strutil.ContainsAny(msg.XMLContent, []string{"<Type>1</Type>"}) {
 					callback(msg, conn)
 				}
 
