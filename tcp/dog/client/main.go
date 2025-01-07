@@ -44,10 +44,10 @@ const (
     <SendCode>Server01</SendCode>
     <ReceiveCode>Client01</ReceiveCode>
     <Type>251</Type>
-    <Code/>
-    <Command>3</Command>
+    <Code>12000testcallback</Code>
+    <Command>4</Command>
     <Time>2022-01-01 12:02:34</Time>
-    <Items/>
+    <Items><Item test="test" fly = "0" test1= "3"/></Items>
 </PatrolHost>`
 )
 
@@ -131,12 +131,10 @@ func (c *clientEventHandler) OnShutdown(_ gnet.Engine) {
 
 func (c *clientEventHandler) OnOpen(_ gnet.Conn) (out []byte, action gnet.Action) {
 	fmt.Println("OnOpen")
-	// 原子操作：对 counter 加 1
-	c.TransmitSeq = atomic.AddInt64(&seq, 1)
 	// 构造消息
 	msg := Message{
 		StartFlag:     startFlag,
-		TransmitSeq:   c.TransmitSeq,
+		TransmitSeq:   seq,
 		ReceiveSeq:    0,
 		SessionSource: 0x00,
 		XMLLength:     int32(len(xmlRegisterData)),
@@ -178,7 +176,6 @@ func (c *clientEventHandler) OnClose(_ gnet.Conn, _ error) (action gnet.Action) 
 
 func (c *clientEventHandler) OnTraffic(conn gnet.Conn) (action gnet.Action) {
 	fmt.Println("OnTraffic")
-
 	// 设置一个缓冲区来存储每次读取的数据，假设每次读取 1024 字节
 	buf := make([]byte, 1024)
 
