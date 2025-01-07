@@ -219,7 +219,7 @@ func (c *clientEventHandler) OnTraffic(conn gnet.Conn) (action gnet.Action) {
 				// 如果解析成功，打印消息并清除已解析的数据
 				fmt.Printf("Parsed message: %+v\n", msg)
 
-				if strutil.ContainsAny(msg.XMLContent, []string{"<Type>1</Type>"}) {
+				if strutil.ContainsAny(msg.XMLContent, []string{"<Type>1</Type>", "<Type>11</Type>"}) {
 					callback(msg, conn, xmlCallback2513)
 				} else if strutil.ContainsAny(msg.XMLContent, []string{"<Type>41</Type>"}) {
 					callback(msg, conn, xmlCallback2514)
