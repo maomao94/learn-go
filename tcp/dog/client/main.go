@@ -47,7 +47,7 @@ const (
     <Code>12000testcallback</Code>
     <Command>4</Command>
     <Time>2022-01-01 12:02:34</Time>
-    <Items><Item test="test" fly = "0" test1= "3"/></Items>
+    <Items><Item test="1" fly = "1" test1= "第一个"/><Item test="2" fly = "2" test1= "第二个"/><Item test="3" fly = "3" test1= "第三个"/></Items>
 </PatrolHost>`
 )
 
