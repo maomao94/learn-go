@@ -39,12 +39,22 @@ const (
     <Items/>
 </PatrolHost>`
 
-	xmlCallback = `<?xml version="1.0" encoding="UTF-8"?>
+	xmlCallback2513 = `<?xml version="1.0" encoding="UTF-8"?>
 <PatrolHost>
     <SendCode>Server01</SendCode>
     <ReceiveCode>Client01</ReceiveCode>
     <Type>251</Type>
-    <Code>12000testcallback</Code>
+    <Code>xmlCallback2513</Code>
+    <Command>3</Command>
+    <Time>2022-01-01 12:02:34</Time>
+    <Items><Item test="1" fly = "1" test1= "第一个"/><Item test="2" fly = "2" test1= "第二个"/><Item test="3" fly = "3" test1= "第三个"/></Items>
+</PatrolHost>`
+	xmlCallback2514 = `<?xml version="1.0" encoding="UTF-8"?>
+<PatrolHost>
+    <SendCode>Server01</SendCode>
+    <ReceiveCode>Client01</ReceiveCode>
+    <Type>251</Type>
+    <Code>xmlCallback2514</Code>
     <Command>4</Command>
     <Time>2022-01-01 12:02:34</Time>
     <Items><Item test="1" fly = "1" test1= "第一个"/><Item test="2" fly = "2" test1= "第二个"/><Item test="3" fly = "3" test1= "第三个"/></Items>
@@ -79,7 +89,7 @@ func (m Message) String() string {
 // 转换为小端字节序
 func toBytes(v interface{}) ([]byte, error) {
 	buf := new(bytes.Buffer)
-	err := binary.Write(buf, binary.BigEndian, v)
+	err := binary.Write(buf, binary.LittleEndian, v)
 	if err != nil {
 		return nil, err
 	}
@@ -150,15 +160,15 @@ func (c *clientEventHandler) OnOpen(_ gnet.Conn) (out []byte, action gnet.Action
 	return buf.Bytes(), gnet.None
 }
 
-func callback(msg Message, con gnet.Conn) {
+func callback(msg Message, con gnet.Conn, xml string) {
 	// 构造消息
 	call := Message{
 		StartFlag:     startFlag,
 		TransmitSeq:   msg.TransmitSeq,
 		ReceiveSeq:    msg.TransmitSeq,
 		SessionSource: 0x00,
-		XMLLength:     int32(len(xmlCallback)),
-		XMLContent:    xmlCallback,
+		XMLLength:     int32(len(xml)),
+		XMLContent:    xml,
 		EndFlag:       endFlag,
 	}
 	// 构造字节流
@@ -210,7 +220,9 @@ func (c *clientEventHandler) OnTraffic(conn gnet.Conn) (action gnet.Action) {
 				fmt.Printf("Parsed message: %+v\n", msg)
 
 				if strutil.ContainsAny(msg.XMLContent, []string{"<Type>1</Type>"}) {
-					callback(msg, conn)
+					callback(msg, conn, xmlCallback2513)
+				} else if strutil.ContainsAny(msg.XMLContent, []string{"<Type>41</Type>"}) {
+					callback(msg, conn, xmlCallback2514)
 				}
 
 				// 从 fullData 中去掉已解析的部分
@@ -237,20 +249,20 @@ func parseMessage(data []byte, msg *Message) error {
 		return fmt.Errorf("invalid message length")
 	}
 
-	// 解析 StartFlag (大端字节序)
-	msg.StartFlag = binary.BigEndian.Uint16(data[:2])
+	// 解析 StartFlag (小端字节序)
+	msg.StartFlag = binary.LittleEndian.Uint16(data[:2])
 
-	// 解析 TransmitSeq (大端字节序)
-	msg.TransmitSeq = int64(binary.BigEndian.Uint64(data[2:10]))
+	// 解析 TransmitSeq (小端字节序)
+	msg.TransmitSeq = int64(binary.LittleEndian.Uint64(data[2:10]))
 
-	// 解析 ReceiveSeq (大端字节序)
-	msg.ReceiveSeq = int64(binary.BigEndian.Uint64(data[10:18]))
+	// 解析 ReceiveSeq (小端字节序)
+	msg.ReceiveSeq = int64(binary.LittleEndian.Uint64(data[10:18]))
 
 	// 解析 SessionSource
 	msg.SessionSource = data[18]
 
-	// 解析 XMLLength（4 字节，大端字节序）
-	msg.XMLLength = int32(binary.BigEndian.Uint32(data[19:23]))
+	// 解析 XMLLength（4 字节，小端字节序）
+	msg.XMLLength = int32(binary.LittleEndian.Uint32(data[19:23]))
 
 	// 检查 XMLLength 是否大于 0，如果是，解析 XMLContent
 	if msg.XMLLength > 0 {
@@ -262,18 +274,18 @@ func parseMessage(data []byte, msg *Message) error {
 		}
 		msg.XMLContent = string(data[xmlContentStart:xmlContentEnd])
 
-		// 解析 EndFlag (大端字节序)
-		msg.EndFlag = binary.BigEndian.Uint16(data[xmlContentEnd : xmlContentEnd+2])
+		// 解析 EndFlag (小端字节序)
+		msg.EndFlag = binary.LittleEndian.Uint16(data[xmlContentEnd : xmlContentEnd+2])
 	} else {
 		// 如果 XMLLength 为 0，说明没有 XML 内容，直接解析 EndFlag
-		msg.EndFlag = binary.BigEndian.Uint16(data[23:25])
+		msg.EndFlag = binary.LittleEndian.Uint16(data[23:25])
 	}
 	return nil
 }
 
 func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) {
 	fmt.Println("OnTick")
-	delay = 120 * time.Second
+	delay = 1 * time.Second
 	// 原子操作：对 counter 加 1
 	c.TransmitSeq = atomic.AddInt64(&seq, 1)
 	// 构造消息
