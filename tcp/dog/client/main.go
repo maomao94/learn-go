@@ -285,7 +285,7 @@ func parseMessage(data []byte, msg *Message) error {
 
 func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) {
 	fmt.Println("OnTick")
-	delay = 1 * time.Second
+	delay = 120 * time.Second
 	// 原子操作：对 counter 加 1
 	c.TransmitSeq = atomic.AddInt64(&seq, 1)
 	// 构造消息
