@@ -28,6 +28,22 @@ const (
     <Time>2022-01-01 12:02:34</Time>
     <Items/>
 </PatrolHost>`
+	xmlBizData = `<PatrolHost>
+    <SendCode>Client01</SendCode>
+    <ReceiveCode>Server01</ReceiveCode>
+    <Code>变电站编码</Code>
+    <Type>1</Type>
+    <Items>
+    <Item patroldevice_name="设备A" patroldevice_code="12345" time="2025-01-09T12:00:00" type="1" value="30" value_unit="低" unit="%"/>
+    <Item patroldevice_name="设备B" patroldevice_code="67890" time="2025-01-09T12:05:00" type="2" value="0" value_unit="正常" unit="1"/>
+    <Item patroldevice_name="设备C" patroldevice_code="54321" time="2025-01-09T12:10:00" type="3" value="0" value_unit="正常" unit="2"/>
+    <Item patroldevice_name="设备D" patroldevice_code="11223" time="2025-01-09T12:15:00" type="4" value="1" value_unit="异常" unit="3"/>
+    <Item patroldevice_name="设备E" patroldevice_code="44556" time="2025-01-09T12:20:00" type="21" value="1" value_unit="报警" unit="4"/>
+    <Item patroldevice_name="设备F" patroldevice_code="78901" time="2025-01-09T12:25:00" type="41" value="1" value_unit="空闲状态" unit="5"/>
+    <Item patroldevice_name="设备G" patroldevice_code="23456" time="2025-01-09T12:30:00" type="61" value="1" value_unit="任务模式" unit="6"/>
+    <Item patroldevice_name="设备H" patroldevice_code="33445" time="2025-01-09T12:35:00" type="201" value="3" value_unit="飞行中" unit="7"/>
+    </Items>
+</PatrolHost>`
 	xmlHeartData = `<?xml version="1.0" encoding="UTF-8"?>
 <PatrolHost>
     <SendCode>Client01</SendCode>
@@ -122,9 +138,8 @@ func writeBuffer(msg Message, buf *bytes.Buffer) {
 // 客户端事件处理器
 type clientEventHandler struct {
 	*gnet.BuiltinEventEngine
-	con         net.Conn
-	TransmitSeq int64
-	ReceiveSeq  int64
+	con        net.Conn
+	ReceiveSeq int64
 }
 
 var seq int64 // 定义一个 int64 类型的计数器
@@ -286,12 +301,10 @@ func parseMessage(data []byte, msg *Message) error {
 func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) {
 	fmt.Println("OnTick")
 	delay = 120 * time.Second
-	// 原子操作：对 counter 加 1
-	c.TransmitSeq = atomic.AddInt64(&seq, 1)
 	// 构造消息
 	msg := Message{
 		StartFlag:     startFlag,
-		TransmitSeq:   c.TransmitSeq,
+		TransmitSeq:   atomic.AddInt64(&seq, 1),
 		ReceiveSeq:    0,
 		SessionSource: 0x00,
 		XMLLength:     int32(len(xmlHeartData)),
@@ -305,6 +318,21 @@ func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) 
 		hexStr := hex.EncodeToString(buf.Bytes())
 		fmt.Printf("send: %s\n", hexStr)
 		c.con.Write(buf.Bytes())
+
+		// 构建 biz
+		msgBiz := Message{
+			StartFlag:     startFlag,
+			TransmitSeq:   atomic.AddInt64(&seq, 1),
+			ReceiveSeq:    0,
+			SessionSource: 0x00,
+			XMLLength:     int32(len(xmlBizData)),
+			XMLContent:    xmlBizData,
+			EndFlag:       endFlag,
+		}
+		// 构造字节流
+		buf1 := new(bytes.Buffer)
+		writeBuffer(msgBiz, buf1)
+		c.con.Write(buf1.Bytes())
 	}
 	return
 }
