@@ -44,6 +44,8 @@ const (
     <Item patroldevice_name="设备H" patroldevice_code="33445" time="2025-01-09T12:35:00" type="201" value="3" value_unit="飞行中" unit="7"/>
     </Items>
 </PatrolHost>`
+	xmlBizDat1 = "<PatrolHost><SendCode>Client01</SendCode><ReceiveCode>Server01</ReceiveCode><Code>变电站编码</Code><Type>64</Type><Items><Item task_patrolled_id=\"任务执行ID001\" device_id=\"设备点位ID001,设备点位ID002\" is_alarm=\"1\" confirm_people=\"确认人A\" confirm_date=\"2025-01-09T12:10:00\"/><Item task_patrolled_id=\"任务执行ID002\" device_id=\"设备点位ID003\" is_alarm=\"2\" confirm_people=\"确认人B\" confirm_date=\"2025-01-09T12:15:00\"/><Item task_patrolled_id=\"任务执行ID003\" device_id=\"设备点位ID004\" is_alarm=\"1\" confirm_people=\"确认人C\" confirm_date=\"2025-01-09T12:20:00\"/><!-- Add more Items here as needed --></Items></PatrolHost>"
+
 	xmlHeartData = `<?xml version="1.0" encoding="UTF-8"?>
 <PatrolHost>
     <SendCode>Client01</SendCode>
@@ -234,7 +236,7 @@ func (c *clientEventHandler) OnTraffic(conn gnet.Conn) (action gnet.Action) {
 				// 如果解析成功，打印消息并清除已解析的数据
 				fmt.Printf("Parsed message: %+v\n", msg)
 
-				if strutil.ContainsAny(msg.XMLContent, []string{"<Type>1</Type>", "<Type>11</Type>"}) {
+				if strutil.ContainsAny(msg.XMLContent, []string{"<Type>1</Type>", "<Type>11</Type>", "<Type>64</Type>"}) {
 					callback(msg, conn, xmlCallback2513)
 				} else if strutil.ContainsAny(msg.XMLContent, []string{"<Type>41</Type>"}) {
 					callback(msg, conn, xmlCallback2514)
@@ -325,8 +327,8 @@ func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) 
 			TransmitSeq:   atomic.AddInt64(&seq, 1),
 			ReceiveSeq:    0,
 			SessionSource: 0x00,
-			XMLLength:     int32(len(xmlBizData)),
-			XMLContent:    xmlBizData,
+			XMLLength:     int32(len(xmlBizDat1)),
+			XMLContent:    xmlBizDat1,
 			EndFlag:       endFlag,
 		}
 		// 构造字节流
