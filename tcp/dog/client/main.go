@@ -33,6 +33,7 @@ const (
     <ReceiveCode>Server01</ReceiveCode>
     <Code>变电站编码</Code>
     <Type>1</Type>
+    <Time>2025-01-09 12:00:00</Time>
     <Items>
     <Item patroldevice_name="设备A" patroldevice_code="12345" time="2025-01-09T12:00:00" type="1" value="30" value_unit="低" unit="%"/>
     <Item patroldevice_name="设备B" patroldevice_code="67890" time="2025-01-09T12:05:00" type="2" value="0" value_unit="正常" unit="1"/>
@@ -302,7 +303,7 @@ func parseMessage(data []byte, msg *Message) error {
 
 func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) {
 	fmt.Println("OnTick")
-	delay = 120 * time.Second
+	delay = 10 * time.Second
 	// 构造消息
 	msg := Message{
 		StartFlag:     startFlag,
@@ -327,8 +328,8 @@ func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) 
 			TransmitSeq:   atomic.AddInt64(&seq, 1),
 			ReceiveSeq:    0,
 			SessionSource: 0x00,
-			XMLLength:     int32(len(xmlBizDat1)),
-			XMLContent:    xmlBizDat1,
+			XMLLength:     int32(len(xmlBizData)),
+			XMLContent:    xmlBizData,
 			EndFlag:       endFlag,
 		}
 		// 构造字节流
