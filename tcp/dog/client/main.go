@@ -35,14 +35,14 @@ const (
     <Type>1</Type>
     <Time>2025-01-09 12:00:00</Time>
     <Items>
-    <Item patroldevice_name="设备A" patroldevice_code="12345" time="2025-01-09T12:00:00" type="1" value="30" value_unit="低" unit="%"/>
-    <Item patroldevice_name="设备B" patroldevice_code="67890" time="2025-01-09T12:05:00" type="2" value="0" value_unit="正常" unit="1"/>
-    <Item patroldevice_name="设备C" patroldevice_code="54321" time="2025-01-09T12:10:00" type="3" value="0" value_unit="正常" unit="2"/>
-    <Item patroldevice_name="设备D" patroldevice_code="11223" time="2025-01-09T12:15:00" type="4" value="1" value_unit="异常" unit="3"/>
-    <Item patroldevice_name="设备E" patroldevice_code="44556" time="2025-01-09T12:20:00" type="21" value="1" value_unit="报警" unit="4"/>
-    <Item patroldevice_name="设备F" patroldevice_code="78901" time="2025-01-09T12:25:00" type="41" value="1" value_unit="空闲状态" unit="5"/>
-    <Item patroldevice_name="设备G" patroldevice_code="23456" time="2025-01-09T12:30:00" type="61" value="1" value_unit="任务模式" unit="6"/>
-    <Item patroldevice_name="设备H" patroldevice_code="33445" time="2025-01-09T12:35:00" type="201" value="3" value_unit="飞行中" unit="7"/>
+    <Item patroldevice_name="设备A" patroldevice_code="12345" time="2025-01-09T12:00:00" type="11" value="30" value_unit="低" unit="%"/>
+    <Item patroldevice_name="设备B" patroldevice_code="67890" time="2025-01-09T12:05:00" type="20" value="0" value_unit="正常" unit="1"/>
+    <Item patroldevice_name="设备C" patroldevice_code="54321" time="2025-01-09T12:10:00" type="31" value="0" value_unit="正常" unit="2"/>
+    <Item patroldevice_name="设备D" patroldevice_code="11223" time="2025-01-09T12:15:00" type="41" value="1" value_unit="异常" unit="3"/>
+    <Item patroldevice_name="设备E" patroldevice_code="44556" time="2025-01-09T12:20:00" type="210" value="1" value_unit="报警" unit="4"/>
+    <Item patroldevice_name="设备F" patroldevice_code="78901" time="2025-01-09T12:25:00" type="414" value="1" value_unit="空闲状态" unit="5"/>
+    <Item patroldevice_name="设备G" patroldevice_code="23456" time="2025-01-09T12:30:00" type="613" value="1" value_unit="任务模式" unit="6"/>
+    <Item patroldevice_name="设备H" patroldevice_code="33445" time="2025-01-09T12:35:00" type="2012" value="3" value_unit="飞行中" unit="7"/>
     </Items>
 </PatrolHost>`
 	xmlBizDat1 = "<PatrolHost><SendCode>Client01</SendCode><ReceiveCode>Server01</ReceiveCode><Code>变电站编码</Code><Type>64</Type><Items><Item task_patrolled_id=\"任务执行ID001\" device_id=\"设备点位ID001,设备点位ID002\" is_alarm=\"1\" confirm_people=\"确认人A\" confirm_date=\"2025-01-09T12:10:00\"/><Item task_patrolled_id=\"任务执行ID002\" device_id=\"设备点位ID003\" is_alarm=\"2\" confirm_people=\"确认人B\" confirm_date=\"2025-01-09T12:15:00\"/><Item task_patrolled_id=\"任务执行ID003\" device_id=\"设备点位ID004\" is_alarm=\"1\" confirm_people=\"确认人C\" confirm_date=\"2025-01-09T12:20:00\"/><!-- Add more Items here as needed --></Items></PatrolHost>"
