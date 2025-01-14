@@ -45,7 +45,44 @@ const (
     <Item patroldevice_name="设备H" patroldevice_code="33445" time="2025-01-09T12:35:00" type="2012" value="3" value_unit="飞行中" unit="7"/>
     </Items>
 </PatrolHost>`
-	xmlBizDat1 = "<PatrolHost><SendCode>Client01</SendCode><ReceiveCode>Server01</ReceiveCode><Code>变电站编码</Code><Type>64</Type><Items><Item task_patrolled_id=\"任务执行ID001\" device_id=\"设备点位ID001,设备点位ID002\" is_alarm=\"1\" confirm_people=\"确认人A\" confirm_date=\"2025-01-09T12:10:00\"/><Item task_patrolled_id=\"任务执行ID002\" device_id=\"设备点位ID003\" is_alarm=\"2\" confirm_people=\"确认人B\" confirm_date=\"2025-01-09T12:15:00\"/><Item task_patrolled_id=\"任务执行ID003\" device_id=\"设备点位ID004\" is_alarm=\"1\" confirm_people=\"确认人C\" confirm_date=\"2025-01-09T12:20:00\"/><!-- Add more Items here as needed --></Items></PatrolHost>"
+
+	xmlBizData1 = `<PatrolHost>
+    <SendCode>Client01</SendCode>
+    <ReceiveCode>Server01</ReceiveCode>
+    <Code>变电站编码</Code>
+    <Type>64</Type>
+    <Items>
+        <Item task_patrolled_id="任务执行ID001" device_id="设备点位ID001,设备点位ID002" is_alarm="1" confirm_people="确认人A" confirm_date="2025-01-09 12:10:00"/>
+        <Item task_patrolled_id="任务执行ID002" device_id="设备点位ID003" is_alarm="2" confirm_people="确认人B" confirm_date="2025-01-09 12:15:00"/>
+        <Item task_patrolled_id="任务执行ID003" device_id="设备点位ID004" is_alarm="1" confirm_people="确认人C" confirm_date="2025-01-09 12:20:00"/>
+        <Item task_patrolled_id="任务执行ID004" device_id="设备点位ID005,设备点位ID006" is_alarm="1" confirm_people="确认人D" confirm_date="2025-01-09 12:25:00"/>
+        <Item task_patrolled_id="任务执行ID005" device_id="设备点位ID007" is_alarm="0" confirm_people="确认人E" confirm_date="2025-01-09 12:30:00"/>
+        <Item task_patrolled_id="任务执行ID006" device_id="设备点位ID008,设备点位ID009,设备点位ID010" is_alarm="2" confirm_people="确认人F" confirm_date="2025-01-09 12:35:00"/>
+        <Item task_patrolled_id="任务执行ID007" device_id="设备点位ID011" is_alarm="1" confirm_people="确认人G" confirm_date="2025-01-09 12:40:00"/>
+    </Items>
+</PatrolHost>`
+
+	xmlBizData3 = `<PatrolHost>
+    <SendCode>Client01</SendCode>
+    <ReceiveCode>Server01</ReceiveCode>
+    <Code>变电站编码</Code>
+    <Type>11</Type>
+    <Time>2025-01-09 12:00:00</Time>
+    <Items>
+        <Item time="2025-01-09 12:00:00" type="1" file_path="/path/to/deviceA_model.xml"/>
+        <Item time="2025-01-09 12:05:00" type="2" file_path="/path/to/region_host_model.xml"/>
+        <Item time="2025-01-09 12:10:00" type="3" file_path="/path/to/robot_model.xml"/>
+        <Item time="2025-01-09 12:15:00" type="4" file_path="/path/to/camera_model.xml"/>
+        <Item time="2025-01-09 12:20:00" type="5" file_path="/path/to/drone_model.xml"/>
+        <Item time="2025-01-09 12:25:00" type="6" file_path="/path/to/voice_model.xml"/>
+        <Item time="2025-01-09 12:30:00" type="7" file_path="/path/to/task_model.xml"/>
+        <Item time="2025-01-09 12:35:00" type="8" file_path="/path/to/maintenance_config.xml"/>
+        <Item time="2025-01-09 12:40:00" type="9" file_path="/path/to/map_file.xml"/>
+        <Item time="2025-01-09 12:45:00" type="10" file_path="/path/to/maintenance_record.xml"/>
+        <Item time="2025-01-09 12:50:00" type="11" file_path="/path/to/linkage_config.xml"/>
+        <Item time="2025-01-09 12:55:00" type="12" file_path="/path/to/alarm_threshold_model.xml"/>
+    </Items>
+</PatrolHost>`
 
 	xmlHeartData = `<?xml version="1.0" encoding="UTF-8"?>
 <PatrolHost>
@@ -328,8 +365,8 @@ func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) 
 			TransmitSeq:   atomic.AddInt64(&seq, 1),
 			ReceiveSeq:    0,
 			SessionSource: 0x00,
-			XMLLength:     int32(len(xmlBizData)),
-			XMLContent:    xmlBizData,
+			XMLLength:     int32(len(xmlBizData3)),
+			XMLContent:    xmlBizData3,
 			EndFlag:       endFlag,
 		}
 		// 构造字节流
