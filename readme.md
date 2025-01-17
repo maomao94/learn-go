@@ -9,7 +9,6 @@
     * 增加依赖：go get
     * 更新依赖：go get[@v...],go mode tidy
     * 项目迁移到go mode：go mode init，go build ./...
-  
 
 ## 接口
 * duck typing 
