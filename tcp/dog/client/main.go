@@ -152,9 +152,19 @@ func toBytes(v interface{}) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+// 转换为大端字节序
+func toBytesBig(v interface{}) ([]byte, error) {
+	buf := new(bytes.Buffer)
+	err := binary.Write(buf, binary.BigEndian, v)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
 // 构造并写入消息内容
 func writeBuffer(msg Message, buf *bytes.Buffer) {
-	if startFlagBytes, err := toBytes(msg.StartFlag); err == nil {
+	if startFlagBytes, err := toBytesBig(msg.StartFlag); err == nil {
 		buf.Write(startFlagBytes)
 	}
 	if transmitSeqBytes, err := toBytes(msg.TransmitSeq); err == nil {
@@ -170,7 +180,7 @@ func writeBuffer(msg Message, buf *bytes.Buffer) {
 		buf.Write(xmlLengthBytes)
 	}
 	buf.WriteString(msg.XMLContent)
-	if endFlagBytes, err := toBytes(msg.EndFlag); err == nil {
+	if endFlagBytes, err := toBytesBig(msg.EndFlag); err == nil {
 		buf.Write(endFlagBytes)
 	}
 }
@@ -304,8 +314,8 @@ func parseMessage(data []byte, msg *Message) error {
 		return fmt.Errorf("invalid message length")
 	}
 
-	// 解析 StartFlag (小端字节序)
-	msg.StartFlag = binary.LittleEndian.Uint16(data[:2])
+	// 解析 StartFlag (大端字节序)
+	msg.StartFlag = binary.BigEndian.Uint16(data[:2])
 
 	// 解析 TransmitSeq (小端字节序)
 	msg.TransmitSeq = int64(binary.LittleEndian.Uint64(data[2:10]))
@@ -330,10 +340,10 @@ func parseMessage(data []byte, msg *Message) error {
 		msg.XMLContent = string(data[xmlContentStart:xmlContentEnd])
 
 		// 解析 EndFlag (小端字节序)
-		msg.EndFlag = binary.LittleEndian.Uint16(data[xmlContentEnd : xmlContentEnd+2])
+		msg.EndFlag = binary.BigEndian.Uint16(data[xmlContentEnd : xmlContentEnd+2])
 	} else {
 		// 如果 XMLLength 为 0，说明没有 XML 内容，直接解析 EndFlag
-		msg.EndFlag = binary.LittleEndian.Uint16(data[23:25])
+		msg.EndFlag = binary.BigEndian.Uint16(data[23:25])
 	}
 	return nil
 }
