@@ -366,7 +366,7 @@ func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) 
 		buf := new(bytes.Buffer)
 		writeBuffer(msg, buf)
 		hexStr := hex.EncodeToString(buf.Bytes())
-		fmt.Printf("send: %s\n", hexStr)
+		fmt.Printf("send 心跳: %s\n", hexStr)
 		c.con.Write(buf.Bytes())
 
 		// 构建 biz
