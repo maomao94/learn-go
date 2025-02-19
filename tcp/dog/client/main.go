@@ -20,7 +20,7 @@ const (
 	endFlag         = 0xEB90
 	xmlRegisterData = `<?xml version="1.0" encoding="UTF-8"?>
 <PatrolHost>
-    <SendCode>Client01</SendCode>
+    <SendCode>testDog</SendCode>
     <ReceiveCode>Server01</ReceiveCode>
     <Type>251</Type>
     <Code>1222</Code>
@@ -29,7 +29,7 @@ const (
     <Items/>
 </PatrolHost>`
 	xmlBizData = `<PatrolHost>
-    <SendCode>Client01</SendCode>
+    <SendCode>testDog</SendCode>
     <ReceiveCode>Server01</ReceiveCode>
     <Code>变电站编码</Code>
     <Type>1</Type>
@@ -47,7 +47,7 @@ const (
 </PatrolHost>`
 
 	xmlBizData1 = `<PatrolHost>
-    <SendCode>Client01</SendCode>
+    <SendCode>testDog</SendCode>
     <ReceiveCode>Server01</ReceiveCode>
     <Code>变电站编码</Code>
     <Type>64</Type>
@@ -63,7 +63,7 @@ const (
 </PatrolHost>`
 
 	xmlBizData3 = `<PatrolHost>
-    <SendCode>Client01</SendCode>
+    <SendCode>testDog</SendCode>
     <ReceiveCode>Server01</ReceiveCode>
     <Code>变电站编码</Code>
     <Type>11</Type>
@@ -86,7 +86,7 @@ const (
 
 	xmlHeartData = `<?xml version="1.0" encoding="UTF-8"?>
 <PatrolHost>
-    <SendCode>Client01</SendCode>
+    <SendCode>testDog</SendCode>
     <ReceiveCode>Server01</ReceiveCode>
     <Type>251</Type>
     <Code/>
@@ -98,7 +98,7 @@ const (
 	xmlCallback2513 = `<?xml version="1.0" encoding="UTF-8"?>
 <PatrolHost>
     <SendCode>Server01</SendCode>
-    <ReceiveCode>Client01</ReceiveCode>
+    <ReceiveCode>testDog</ReceiveCode>
     <Type>251</Type>
     <Code>xmlCallback2513</Code>
     <Command>3</Command>
@@ -108,7 +108,7 @@ const (
 	xmlCallback2514 = `<?xml version="1.0" encoding="UTF-8"?>
 <PatrolHost>
     <SendCode>Server01</SendCode>
-    <ReceiveCode>Client01</ReceiveCode>
+    <ReceiveCode>testDog</ReceiveCode>
     <Type>251</Type>
     <Code>xmlCallback2514</Code>
     <Command>4</Command>
