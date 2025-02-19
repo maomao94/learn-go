@@ -361,7 +361,7 @@ func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) 
 		XMLContent:    xmlHeartData,
 		EndFlag:       endFlag,
 	}
-	fmt.Printf("send 心跳: %d\n", &seq)
+	fmt.Printf("send 心跳: %d\n", seq)
 	if c.con != nil {
 		// 构造字节流
 		buf := new(bytes.Buffer)
@@ -412,7 +412,7 @@ func main() {
 	}
 	defer cli.Stop()
 	wg.Add(1)
-	conn, err := cli.Dial("tcp", "127.0.0.1:7100")
+	conn, err := cli.Dial("tcp", "10.10.1.213:7100")
 	if err != nil {
 		log.Fatalf("Failed to dial gnet client: %v", err)
 	}
