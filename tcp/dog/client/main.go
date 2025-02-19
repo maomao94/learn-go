@@ -361,6 +361,7 @@ func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) 
 		XMLContent:    xmlHeartData,
 		EndFlag:       endFlag,
 	}
+	fmt.Printf("send 心跳: %d\n", &seq)
 	if c.con != nil {
 		// 构造字节流
 		buf := new(bytes.Buffer)
