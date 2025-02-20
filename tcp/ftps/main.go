@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+	var opts []ftp.DialOption
 	// FTPS服务器配置
 	server := "10.10.1.213:10012" // 显式FTPS通常使用21端口
 	username := "test"
@@ -18,10 +19,20 @@ func main() {
 	tlsConfig := &tls.Config{
 		InsecureSkipVerify: true, // 跳过证书验证（仅用于测试，生产环境应设为false）
 		//ServerName:         "ftp.example.com",
+		ClientSessionCache: tls.NewLRUClientSessionCache(1), // 启用会话缓存
+		VerifyConnection: func(state tls.ConnectionState) error {
+			fmt.Printf("TLS Session Resumed: %v\n", state.DidResume)
+			return nil
+		},
+		SessionTicketsDisabled: false,
 	}
 
+	opts = append(opts, ftp.DialWithExplicitTLS(tlsConfig))
+	opts = append(opts, ftp.DialWithDebugOutput(os.Stdout))
+	opts = append(opts, ftp.DialWithDisabledEPSV(true))
+
 	// 创建带显式TLS的FTP客户端
-	client, err := ftp.Dial(server, ftp.DialWithExplicitTLS(tlsConfig), ftp.DialWithDisabledEPSV(true))
+	client, err := ftp.Dial(server, opts...)
 	if err != nil {
 		log.Fatal("连接失败:", err)
 	}
