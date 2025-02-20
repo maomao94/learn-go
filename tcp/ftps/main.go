@@ -27,7 +27,8 @@ func main() {
 		SessionTicketsDisabled: false,
 	}
 
-	opts = append(opts, ftp.DialWithExplicitTLS(tlsConfig))
+	//opts = append(opts, ftp.DialWithExplicitTLS(tlsConfig))
+	opts = append(opts, ftp.DialWithTLS(tlsConfig)) // 使用隐式TLS连接
 	opts = append(opts, ftp.DialWithDebugOutput(os.Stdout))
 	opts = append(opts, ftp.DialWithDisabledEPSV(true))
 
