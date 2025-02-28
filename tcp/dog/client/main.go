@@ -19,7 +19,7 @@ const (
 	startFlag       = 0xEB90
 	endFlag         = 0xEB90
 	xmlRegisterData = `<?xml version="1.0" encoding="UTF-8"?>
-<PatrolHost>
+<PatrolDevice>
     <SendCode>testDog</SendCode>
     <ReceiveCode>Server01</ReceiveCode>
     <Type>251</Type>
@@ -27,8 +27,8 @@ const (
     <Command>1</Command>
     <Time>2022-01-01 12:02:34</Time>
     <Items/>
-</PatrolHost>`
-	xmlBizData = `<PatrolHost>
+</PatrolDevice>`
+	xmlBizData = `<PatrolDevice>
     <SendCode>testDog</SendCode>
     <ReceiveCode>Server01</ReceiveCode>
     <Code>变电站编码</Code>
@@ -44,9 +44,9 @@ const (
     <Item patroldevice_name="设备G" patroldevice_code="23456" time="2025-01-09T12:30:00" type="613" value="1" value_unit="任务模式" unit="6"/>
     <Item patroldevice_name="设备H" patroldevice_code="33445" time="2025-01-09T12:35:00" type="2012" value="3" value_unit="飞行中" unit="7"/>
     </Items>
-</PatrolHost>`
+</PatrolDevice>`
 
-	xmlBizData1 = `<PatrolHost>
+	xmlBizData1 = `<PatrolDevice>
     <SendCode>testDog</SendCode>
     <ReceiveCode>Server01</ReceiveCode>
     <Code>变电站编码</Code>
@@ -60,9 +60,9 @@ const (
         <Item task_patrolled_id="任务执行ID006" device_id="设备点位ID008,设备点位ID009,设备点位ID010" is_alarm="2" confirm_people="确认人F" confirm_date="2025-01-09 12:35:00"/>
         <Item task_patrolled_id="任务执行ID007" device_id="设备点位ID011" is_alarm="1" confirm_people="确认人G" confirm_date="2025-01-09 12:40:00"/>
     </Items>
-</PatrolHost>`
+</PatrolDevice>`
 
-	xmlBizData3 = `<PatrolHost>
+	xmlBizData3 = `<PatrolDevice>
     <SendCode>testDog</SendCode>
     <ReceiveCode>Server01</ReceiveCode>
     <Code>变电站编码</Code>
@@ -82,10 +82,10 @@ const (
         <Item time="2025-01-09 12:50:00" type="11" file_path="/path/to/linkage_config.xml"/>
         <Item time="2025-01-09 12:55:00" type="12" file_path="/path/to/alarm_threshold_model.xml"/>
     </Items>
-</PatrolHost>`
+</PatrolDevice>`
 
 	xmlHeartData = `<?xml version="1.0" encoding="UTF-8"?>
-<PatrolHost>
+<PatrolDevice>
     <SendCode>testDog</SendCode>
     <ReceiveCode>Server01</ReceiveCode>
     <Type>251</Type>
@@ -93,10 +93,10 @@ const (
     <Command>2</Command>
     <Time>2022-01-01 12:02:34</Time>
     <Items/>
-</PatrolHost>`
+</PatrolDevice>`
 
 	xmlCallback2513 = `<?xml version="1.0" encoding="UTF-8"?>
-<PatrolHost>
+<PatrolDevice>
     <SendCode>Server01</SendCode>
     <ReceiveCode>testDog</ReceiveCode>
     <Type>251</Type>
@@ -104,9 +104,9 @@ const (
     <Command>3</Command>
     <Time>2022-01-01 12:02:34</Time>
     <Items><Item test="1" fly = "1" test1= "第一个"/><Item test="2" fly = "2" test1= "第二个"/><Item test="3" fly = "3" test1= "第三个"/></Items>
-</PatrolHost>`
+</PatrolDevice>`
 	xmlCallback2514 = `<?xml version="1.0" encoding="UTF-8"?>
-<PatrolHost>
+<PatrolDevice>
     <SendCode>Server01</SendCode>
     <ReceiveCode>testDog</ReceiveCode>
     <Type>251</Type>
@@ -114,7 +114,7 @@ const (
     <Command>4</Command>
     <Time>2022-01-01 12:02:34</Time>
     <Items><Item test="1" fly = "1" test1= "第一个"/><Item test="2" fly = "2" test1= "第二个"/><Item test="3" fly = "3" test1= "第三个"/></Items>
-</PatrolHost>`
+</PatrolDevice>`
 )
 
 type Message struct {
@@ -412,7 +412,7 @@ func main() {
 	}
 	defer cli.Stop()
 	wg.Add(1)
-	conn, err := cli.Dial("tcp", "10.10.1.213:7100")
+	conn, err := cli.Dial("tcp", "127.0.0.1:7100")
 	if err != nil {
 		log.Fatalf("Failed to dial gnet client: %v", err)
 	}
