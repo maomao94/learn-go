@@ -1,6 +1,8 @@
 module learn-go
 
-go 1.18
+go 1.21
+
+toolchain go1.24.0
 
 require (
 	github.com/Masterminds/squirrel v1.5.3
@@ -9,6 +11,7 @@ require (
 	github.com/eclipse/paho.mqtt.golang v1.3.5
 	github.com/gin-gonic/gin v1.7.4
 	github.com/go-vgo/robotgo v0.100.10
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/golang-module/carbon v1.5.4
 	github.com/golang/protobuf v1.5.2
 	github.com/hibiken/asynq v0.22.1
@@ -27,6 +30,7 @@ require (
 	github.com/xuri/excelize/v2 v2.6.1
 	github.com/zeromicro/go-zero v1.3.4
 	go.uber.org/zap v1.21.0
+	gocv.io/x/gocv v0.41.0
 	golang.org/x/net v0.6.0
 	golang.org/x/text v0.9.0
 	golang.org/x/tools v0.6.0
