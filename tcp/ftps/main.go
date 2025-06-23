@@ -8,12 +8,13 @@ import (
 	"os"
 )
 
+// GOOS=linux GOARCH=arm64 go build -x -v -ldflags="-s -w" -o app/main main.go
 func main() {
 	var opts []ftp.DialOption
 	// FTPS服务器配置
-	server := "10.10.1.213:10012" // 显式FTPS通常使用21端口
-	username := "test"
-	password := "123qwe,."
+	server := "172.17.4.1:10012" // 显式FTPS通常使用21端口
+	username := "dog"
+	password := "Robotdog@666"
 
 	// TLS配置（根据服务器证书情况调整）
 	tlsConfig := &tls.Config{
