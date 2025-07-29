@@ -371,19 +371,19 @@ func (c *clientEventHandler) OnTick() (delay time.Duration, action gnet.Action) 
 		c.con.Write(buf.Bytes())
 
 		// 构建 biz
-		msgBiz := Message{
-			StartFlag:     startFlag,
-			TransmitSeq:   atomic.AddInt64(&seq, 1),
-			ReceiveSeq:    0,
-			SessionSource: 0x00,
-			XMLLength:     int32(len(xmlBizData3)),
-			XMLContent:    xmlBizData3,
-			EndFlag:       endFlag,
-		}
+		//msgBiz := Message{
+		//	StartFlag:     startFlag,
+		//	TransmitSeq:   atomic.AddInt64(&seq, 1),
+		//	ReceiveSeq:    0,
+		//	SessionSource: 0x00,
+		//	XMLLength:     int32(len(xmlBizData3)),
+		//	XMLContent:    xmlBizData3,
+		//	EndFlag:       endFlag,
+		//}
 		// 构造字节流
-		buf1 := new(bytes.Buffer)
-		writeBuffer(msgBiz, buf1)
-		c.con.Write(buf1.Bytes())
+		//buf1 := new(bytes.Buffer)
+		//writeBuffer(msgBiz, buf1)
+		//c.con.Write(buf1.Bytes())
 	}
 	return
 }
