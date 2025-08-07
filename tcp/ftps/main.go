@@ -3,9 +3,10 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/jlaffaye/ftp"
 	"log"
 	"os"
+
+	"github.com/jlaffaye/ftp"
 )
 
 // GOOS=linux GOARCH=arm64 go build -x -v -ldflags="-s -w" -o app/main main.go
