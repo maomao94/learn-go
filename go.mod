@@ -9,6 +9,7 @@ require (
 	github.com/chentaihan/container v0.0.0-20200806021252-5df5fc19365e
 	github.com/duke-git/lancet/v2 v2.3.7
 	github.com/eclipse/paho.mqtt.golang v1.5.0
+	github.com/emirpasic/gods v1.18.1
 	github.com/gin-gonic/gin v1.10.1
 	github.com/go-vgo/robotgo v0.110.8
 	github.com/golang-jwt/jwt/v5 v5.3.0
