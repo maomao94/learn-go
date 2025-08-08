@@ -147,7 +147,7 @@ func main() {
 	}
 
 	employees := []*Employee{
-		{"张三", nil, 2, 0},
+		{"张三", nil, 1, 0},
 		{"李四", nil, 1, 0},
 		{"王五", nil, 1, 0},
 	}
