@@ -3,36 +3,44 @@ package main
 import (
 	"fmt"
 	"math"
-	"sort"
 	"strings"
+
+	"github.com/emirpasic/gods/queues/priorityqueue"
 )
 
+// 时间区间
 type TimeSlot struct {
 	Start int
 	End   int
 }
 
+// 任务
 type Task struct {
 	ID       string
 	Name     string
 	TimeSlot TimeSlot
 }
 
+// 员工任务分配
 type TaskAssignment struct {
 	Task     Task
 	TimeSlot TimeSlot
 }
 
+// 员工结构
 type Employee struct {
 	Name          string
 	Assignments   []TaskAssignment
 	MaxConcurrent int
+	Load          int // 当前任务数量
 }
 
+// 判断两个时间区间是否重叠
 func isOverlap(a, b TimeSlot) bool {
 	return a.Start < b.End && b.Start < a.End
 }
 
+// 统计员工某时间段的任务并发数
 func concurrentCount(emp *Employee, slot TimeSlot) int {
 	count := 0
 	for _, assign := range emp.Assignments {
@@ -43,14 +51,9 @@ func concurrentCount(emp *Employee, slot TimeSlot) int {
 	return count
 }
 
+// 判断员工是否可分配任务
 func canAssign(emp *Employee, slot TimeSlot) bool {
 	return concurrentCount(emp, slot) < emp.MaxConcurrent
-}
-
-func sortEmployeesByLoad(emps []Employee) {
-	sort.Slice(emps, func(i, j int) bool {
-		return len(emps[i].Assignments) < len(emps[j].Assignments)
-	})
 }
 
 // 计算时间区间字符串，并返回最大宽度
@@ -78,7 +81,8 @@ func centerPad(s string, width int) string {
 	return strings.Repeat(" ", left) + s + strings.Repeat(" ", right)
 }
 
-func printScheduleTable(employees []Employee, startTime, endTime, step int) {
+// 打印排班时间占用表
+func printScheduleTable(employees []*Employee, startTime, endTime, step int) {
 	intervals, width := buildTimeIntervals(startTime, endTime, step)
 	slots := len(intervals)
 
@@ -142,24 +146,52 @@ func main() {
 		{"T6", "深夜任务", TimeSlot{900, 930}}, // 大数字测试
 	}
 
-	employees := []Employee{
-		{"张三", nil, 2},
-		{"李四", nil, 1},
-		{"王五", nil, 1},
+	employees := []*Employee{
+		{"张三", nil, 2, 0},
+		{"李四", nil, 1, 0},
+		{"王五", nil, 1, 0},
+	}
+
+	// 创建优先队列，任务负载最少优先
+	pq := priorityqueue.NewWith(func(a, b interface{}) int {
+		e1 := a.(*Employee)
+		e2 := b.(*Employee)
+		return e1.Load - e2.Load
+	})
+
+	// 入队所有员工
+	for _, emp := range employees {
+		pq.Enqueue(emp)
 	}
 
 	for _, task := range tasks {
-		sortEmployeesByLoad(employees)
-
 		assigned := false
-		for i := range employees {
-			if canAssign(&employees[i], task.TimeSlot) {
-				employees[i].Assignments = append(employees[i].Assignments, TaskAssignment{task, task.TimeSlot})
-				fmt.Printf("任务【%s】分配给员工【%s】\n", task.Name, employees[i].Name)
+		size := pq.Size()
+
+		// 临时存放没有被分配的员工，任务分配后重新入队
+		temp := []*Employee{}
+
+		for i := 0; i < size; i++ {
+			empRaw, _ := pq.Dequeue()
+			emp := empRaw.(*Employee)
+
+			if !assigned && canAssign(emp, task.TimeSlot) {
+				// 分配任务
+				emp.Assignments = append(emp.Assignments, TaskAssignment{task, task.TimeSlot})
+				emp.Load++
+				fmt.Printf("任务【%s】分配给员工【%s】\n", task.Name, emp.Name)
 				assigned = true
-				break
 			}
+
+			// 不管是否分配成功，都要放回队列
+			temp = append(temp, emp)
 		}
+
+		// 重新入队所有员工（包含刚分配任务的）
+		for _, e := range temp {
+			pq.Enqueue(e)
+		}
+
 		if !assigned {
 			fmt.Printf("任务【%s】无法分配，资源不足或冲突\n", task.Name)
 		}
