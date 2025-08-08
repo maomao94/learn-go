@@ -5,20 +5,22 @@ import (
 	"math"
 	"sort"
 	"strings"
+
+	"github.com/emirpasic/gods/queues/priorityqueue"
 )
 
 // 时间区间
 type TimeSlot struct {
-	Start int // 分钟，从0开始
+	Start int
 	End   int
 }
 
-// 任务结构，增加优先级字段
+// 任务
 type Task struct {
 	ID       string
 	Name     string
 	TimeSlot TimeSlot
-	Priority int
+	Priority int // 优先级，数字越大优先级越高
 }
 
 // 员工任务分配
@@ -27,7 +29,7 @@ type TaskAssignment struct {
 	TimeSlot TimeSlot
 }
 
-// 员工结构，MaxConcurrent=1，无并发
+// 员工结构
 type Employee struct {
 	Name          string
 	Assignments   []TaskAssignment
@@ -51,7 +53,7 @@ func concurrentCount(emp *Employee, slot TimeSlot) int {
 	return count
 }
 
-// 判断员工是否可分配任务（无并发）
+// 判断员工是否可分配任务
 func canAssign(emp *Employee, slot TimeSlot) bool {
 	return concurrentCount(emp, slot) < emp.MaxConcurrent
 }
@@ -132,47 +134,78 @@ func printScheduleTable(employees []*Employee, startTime, endTime, step int) {
 
 func main() {
 	tasks := []Task{
-		{"T1", "巡视A", TimeSlot{0, 60}, 10},
-		{"T2", "巡视B", TimeSlot{30, 90}, 8},
-		{"T3", "巡视C", TimeSlot{60, 120}, 6},
-		{"T4", "巡视D", TimeSlot{120, 150}, 9},
-		{"T5", "巡视E", TimeSlot{150, 210}, 3},
-		{"T6", "巡视F", TimeSlot{180, 240}, 7},
-		{"T7", "巡视G", TimeSlot{210, 270}, 2},
+		{"T1", "巡检A", TimeSlot{0, 60}, 3},
+		{"T2", "巡检B", TimeSlot{30, 90}, 2},
+		{"T3", "巡检C", TimeSlot{30, 90}, 1},
+		{"T4", "巡检D", TimeSlot{30, 90}, 4},
+		{"T5", "巡检E", TimeSlot{0, 30}, 5},
+		{"T6", "巡检F", TimeSlot{0, 30}, 2},
+		{"T7", "巡检G", TimeSlot{0, 30}, 1},
+		{"T8", "巡检H", TimeSlot{90, 120}, 3},
+		{"T9", "门禁巡查", TimeSlot{60, 120}, 3},
+		{"T10", "烟感测试", TimeSlot{60, 90}, 1},
+		{"T11", "红外测试", TimeSlot{90, 150}, 2},
+		{"T12", "深夜任务", TimeSlot{900, 930}, 5}, // 大数字测试
 	}
 
 	employees := []*Employee{
-		{"张三", nil, 1, 0},
+		{"张三", nil, 2, 0},
 		{"李四", nil, 1, 0},
 		{"王五", nil, 1, 0},
 	}
 
-	// 按价值密度（优先级/时长）降序排序任务
+	// 按任务优先级和时长算优先因子，排序任务(优先级/时长，越大越优先)
 	sort.Slice(tasks, func(i, j int) bool {
-		lengthI := tasks[i].TimeSlot.End - tasks[i].TimeSlot.Start
-		lengthJ := tasks[j].TimeSlot.End - tasks[j].TimeSlot.Start
-		valI := float64(tasks[i].Priority) / float64(lengthI)
-		valJ := float64(tasks[j].Priority) / float64(lengthJ)
-		return valI > valJ
+		ti := tasks[i]
+		tj := tasks[j]
+		di := ti.TimeSlot.End - ti.TimeSlot.Start
+		dj := tj.TimeSlot.End - tj.TimeSlot.Start
+		vi := float64(ti.Priority) / float64(di)
+		vj := float64(tj.Priority) / float64(dj)
+		return vi > vj
 	})
+
+	// 创建优先队列，任务负载最少优先
+	pq := priorityqueue.NewWith(func(a, b interface{}) int {
+		e1 := a.(*Employee)
+		e2 := b.(*Employee)
+		return e1.Load - e2.Load
+	})
+
+	// 入队所有员工
+	for _, emp := range employees {
+		pq.Enqueue(emp)
+	}
 
 	for _, task := range tasks {
 		assigned := false
-		for _, emp := range employees {
-			if canAssign(emp, task.TimeSlot) {
+		size := pq.Size()
+
+		temp := []*Employee{}
+
+		for i := 0; i < size; i++ {
+			empRaw, _ := pq.Dequeue()
+			emp := empRaw.(*Employee)
+
+			if !assigned && canAssign(emp, task.TimeSlot) {
 				emp.Assignments = append(emp.Assignments, TaskAssignment{task, task.TimeSlot})
 				emp.Load++
-				fmt.Printf("任务【%s】(优先级%d, 时长%d) 分配给员工【%s】\n",
-					task.Name, task.Priority, task.TimeSlot.End-task.TimeSlot.Start, emp.Name)
+				fmt.Printf("任务【%s】优先级%d分配给员工【%s】\n", task.Name, task.Priority, emp.Name)
 				assigned = true
-				break
 			}
+
+			temp = append(temp, emp)
 		}
+
+		for _, e := range temp {
+			pq.Enqueue(e)
+		}
+
 		if !assigned {
-			fmt.Printf("任务【%s】无法分配，资源不足或时间冲突\n", task.Name)
+			fmt.Printf("任务【%s】优先级%d无法分配，资源不足或冲突\n", task.Name, task.Priority)
 		}
 	}
 
 	fmt.Println("\n排班时间占用表（单位：分钟，步长30）:")
-	printScheduleTable(employees, 0, 300, 30)
+	printScheduleTable(employees, 0, 960, 30)
 }
