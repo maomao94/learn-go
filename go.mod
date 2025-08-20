@@ -23,7 +23,7 @@ require (
 	github.com/nacos-group/nacos-sdk-go v1.1.5
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/panjf2000/gnet v1.6.7
-	github.com/panjf2000/gnet/v2 v2.9.2
+	github.com/panjf2000/gnet/v2 v2.9.3
 	github.com/prometheus/client_golang v1.23.0
 	github.com/schollz/progressbar/v3 v3.18.0
 	github.com/smallnest/goframe v1.0.0
@@ -160,7 +160,7 @@ require (
 	golang.org/x/image v0.27.0 // indirect
 	golang.org/x/mod v0.26.0 // indirect
 	golang.org/x/sync v0.16.0 // indirect
-	golang.org/x/sys v0.34.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
 	golang.org/x/term v0.33.0 // indirect
 	golang.org/x/time v0.10.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20250528174236-200df99c418a // indirect
