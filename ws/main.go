@@ -113,7 +113,7 @@ func (s *WebSocketServer) sendErrorMessage(conn *websocket.Conn, content string)
 
 // 处理客户端连接
 func (s *WebSocketServer) handleConnection(w http.ResponseWriter, r *http.Request) {
-	// 升级连接
+	// 升级HTTP连接为WebSocket
 	conn, err := s.upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Printf("升级连接失败: %v", err)
@@ -134,18 +134,6 @@ func (s *WebSocketServer) handleConnection(w http.ResponseWriter, r *http.Reques
 	s.clients[clientID] = conn
 	s.clientsMu.Unlock()
 
-	// ✅ 正确的 Pong 处理：收到 Pong 时刷新超时
-	conn.SetPongHandler(func(appData string) error {
-		conn.SetReadDeadline(time.Now().Add(s.config.ReadTimeout))
-		return nil
-	})
-
-	// ✅ 可选：收到 Ping 时立刻回复 Pong（有些实现需要）
-	conn.SetPingHandler(func(appData string) error {
-		log.Printf("收到 Ping，自动回复 Pong")
-		return conn.WriteMessage(websocket.PongMessage, []byte(appData))
-	})
-
 	defer func() {
 		// 从客户端列表移除
 		s.clientsMu.Lock()
@@ -160,34 +148,124 @@ func (s *WebSocketServer) handleConnection(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	// 如果需要认证，等待客户端发送认证信息
+	authenticated := !s.config.AuthRequired
+	if !authenticated {
+		if err := s.sendSystemMessage(conn, "请发送认证信息 (type: auth, content: {\"token\": \"your-token\"})"); err != nil {
+			log.Printf("发送认证提示失败: %v", err)
+			return
+		}
+	}
+
 	// 消息处理循环
 	for {
+		// 读取消息（获取消息类型）
 		msgType, data, err := conn.ReadMessage()
 		if err != nil {
 			log.Printf("读取消息失败: %v", err)
 			break
 		}
+		// 重置超时
+		conn.SetReadDeadline(time.Now().Add(s.config.ReadTimeout))
+		conn.SetWriteDeadline(time.Now().Add(s.config.WriteTimeout))
 
-		// ⚡ 协议 Ping/Pong 已经由 handler 自动处理，这里只关心 TextMessage
+		// 关键修复：处理WebSocket控制帧（Ping/Pong）
+		if msgType == websocket.PingMessage {
+			// 收到Ping帧，立即返回Pong帧（保持连接活性）
+			if err := conn.WriteMessage(websocket.PongMessage, data); err != nil {
+				log.Printf("发送Pong响应失败: %v", err)
+				break
+			}
+			continue // 处理完Ping帧，继续循环
+		}
+
+		// 只处理文本消息（忽略其他类型如二进制消息）
 		if msgType != websocket.TextMessage {
 			log.Printf("忽略非文本消息类型: %d", msgType)
 			continue
 		}
-
 		log.Printf("收到消息: %s", string(data))
 
-		// 👉 这里继续你的 JSON 消息处理逻辑
+		// 处理JSON文本消息
 		var msg Message
 		if err := json.Unmarshal(data, &msg); err != nil {
-			log.Printf("不是 JSON，按普通文本回显")
-			_ = conn.WriteMessage(websocket.TextMessage, []byte(fmt.Sprintf("echo: %s", string(data))))
+			// 如果不是JSON格式，当作普通文本处理
+			response := Message{
+				Type:    MessageTypeText,
+				Content: fmt.Sprintf("收到文本消息: %s", string(data)),
+				Time:    time.Now().Format(time.RFC3339),
+				ID:      s.nextMessageID(),
+			}
+			responseData, _ := json.Marshal(response)
+			if err := conn.WriteMessage(websocket.TextMessage, responseData); err != nil {
+				log.Printf("发送消息失败: %v", err)
+				break
+			}
 			continue
 		}
 
-		// … 认证逻辑、业务逻辑省略 …
-	}
+		// 处理认证消息
+		if msg.Type == MessageTypeAuth && !authenticated {
+			var authReq AuthRequest
+			if err := json.Unmarshal([]byte(msg.Content.(string)), &authReq); err != nil {
+				if err := s.sendErrorMessage(conn, "无效的认证格式"); err != nil {
+					log.Printf("发送错误消息失败: %v", err)
+					break
+				}
+				continue
+			}
 
-	log.Printf("客户端断开连接: %s", clientID)
+			// 简单的认证逻辑：token不为空即通过
+			if authReq.Token != "" {
+				authenticated = true
+				if err := s.sendSystemMessage(conn, "认证成功"); err != nil {
+					log.Printf("发送认证成功消息失败: %v", err)
+					break
+				}
+				log.Printf("客户端 %s 认证成功", clientID)
+			} else {
+				if err := s.sendErrorMessage(conn, "认证失败：token不能为空"); err != nil {
+					log.Printf("发送错误消息失败: %v", err)
+					break
+				}
+			}
+			continue
+		}
+
+		// 未认证的客户端不能发送其他消息
+		if !authenticated {
+			if err := s.sendErrorMessage(conn, "请先认证"); err != nil {
+				log.Printf("发送错误消息失败: %v", err)
+				break
+			}
+			continue
+		}
+
+		// 回声消息：将收到的消息原样返回
+		response := Message{
+			Type:    msg.Type,
+			Content: msg.Content,
+			Data:    msg.Data,
+			Time:    time.Now().Format(time.RFC3339),
+			ID:      s.nextMessageID(),
+		}
+
+		responseData, err := json.Marshal(response)
+		if err != nil {
+			log.Printf("序列化响应消息失败: %v", err)
+			if err := s.sendErrorMessage(conn, "处理消息失败"); err != nil {
+				log.Printf("发送错误消息失败: %v", err)
+				break
+			}
+			continue
+		}
+
+		// 发送响应
+		if err := conn.WriteMessage(websocket.TextMessage, responseData); err != nil {
+			log.Printf("发送消息失败: %v", err)
+			break
+		}
+	}
 }
 
 // 启动服务器
