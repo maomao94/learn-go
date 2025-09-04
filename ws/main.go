@@ -41,7 +41,6 @@ type ServerConfig struct {
 	ReadTimeout    time.Duration
 	WriteTimeout   time.Duration
 	MaxMessageSize int64
-	AuthRequired   bool
 }
 
 // WebSocket服务器
@@ -148,15 +147,6 @@ func (s *WebSocketServer) handleConnection(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// 如果需要认证，等待客户端发送认证信息
-	authenticated := !s.config.AuthRequired
-	if !authenticated {
-		if err := s.sendSystemMessage(conn, "请发送认证信息 (type: auth, content: {\"token\": \"your-token\"})"); err != nil {
-			log.Printf("发送认证提示失败: %v", err)
-			return
-		}
-	}
-
 	// 消息处理循环
 	for {
 		// 读取消息（获取消息类型）
@@ -168,16 +158,6 @@ func (s *WebSocketServer) handleConnection(w http.ResponseWriter, r *http.Reques
 		// 重置超时
 		conn.SetReadDeadline(time.Now().Add(s.config.ReadTimeout))
 		conn.SetWriteDeadline(time.Now().Add(s.config.WriteTimeout))
-
-		// 关键修复：处理WebSocket控制帧（Ping/Pong）
-		if msgType == websocket.PingMessage {
-			// 收到Ping帧，立即返回Pong帧（保持连接活性）
-			if err := conn.WriteMessage(websocket.PongMessage, data); err != nil {
-				log.Printf("发送Pong响应失败: %v", err)
-				break
-			}
-			continue // 处理完Ping帧，继续循环
-		}
 
 		// 只处理文本消息（忽略其他类型如二进制消息）
 		if msgType != websocket.TextMessage {
@@ -199,43 +179,6 @@ func (s *WebSocketServer) handleConnection(w http.ResponseWriter, r *http.Reques
 			responseData, _ := json.Marshal(response)
 			if err := conn.WriteMessage(websocket.TextMessage, responseData); err != nil {
 				log.Printf("发送消息失败: %v", err)
-				break
-			}
-			continue
-		}
-
-		// 处理认证消息
-		if msg.Type == MessageTypeAuth && !authenticated {
-			var authReq AuthRequest
-			if err := json.Unmarshal([]byte(msg.Content.(string)), &authReq); err != nil {
-				if err := s.sendErrorMessage(conn, "无效的认证格式"); err != nil {
-					log.Printf("发送错误消息失败: %v", err)
-					break
-				}
-				continue
-			}
-
-			// 简单的认证逻辑：token不为空即通过
-			if authReq.Token != "" {
-				authenticated = true
-				if err := s.sendSystemMessage(conn, "认证成功"); err != nil {
-					log.Printf("发送认证成功消息失败: %v", err)
-					break
-				}
-				log.Printf("客户端 %s 认证成功", clientID)
-			} else {
-				if err := s.sendErrorMessage(conn, "认证失败：token不能为空"); err != nil {
-					log.Printf("发送错误消息失败: %v", err)
-					break
-				}
-			}
-			continue
-		}
-
-		// 未认证的客户端不能发送其他消息
-		if !authenticated {
-			if err := s.sendErrorMessage(conn, "请先认证"); err != nil {
-				log.Printf("发送错误消息失败: %v", err)
 				break
 			}
 			continue
@@ -280,7 +223,6 @@ func (s *WebSocketServer) Start() error {
 func main() {
 	// 命令行参数
 	port := flag.Int("port", 18080, "服务器端口")
-	authRequired := flag.Bool("auth", false, "是否需要认证")
 	flag.Parse()
 
 	// 创建服务器配置
@@ -289,7 +231,6 @@ func main() {
 		ReadTimeout:    30 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxMessageSize: 1024 * 1024, // 1MB
-		AuthRequired:   *authRequired,
 	}
 
 	// 创建并启动服务器
