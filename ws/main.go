@@ -184,6 +184,7 @@ func (s *WebSocketServer) handleConnection(w http.ResponseWriter, r *http.Reques
 			log.Printf("忽略非文本消息类型: %d", msgType)
 			continue
 		}
+		log.Printf("收到消息: %s", string(data))
 
 		// 处理JSON文本消息
 		var msg Message
