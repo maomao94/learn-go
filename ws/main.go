@@ -228,8 +228,8 @@ func main() {
 	// 创建服务器配置
 	config := ServerConfig{
 		Port:           *port,
-		ReadTimeout:    30 * time.Second,
-		WriteTimeout:   10 * time.Second,
+		ReadTimeout:    60 * time.Second,
+		WriteTimeout:   60 * time.Second,
 		MaxMessageSize: 1024 * 1024, // 1MB
 	}
 
