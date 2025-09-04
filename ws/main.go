@@ -176,15 +176,6 @@ func (s *WebSocketServer) handleConnection(w http.ResponseWriter, r *http.Reques
 
 		log.Printf("收到消息: %s", string(data))
 
-		// 应用级心跳：如果客户端发 "ping"
-		if string(data) == "ping" {
-			if err := conn.WriteMessage(websocket.TextMessage, []byte("pong")); err != nil {
-				log.Printf("发送 pong 失败: %v", err)
-				break
-			}
-			continue
-		}
-
 		// 👉 这里继续你的 JSON 消息处理逻辑
 		var msg Message
 		if err := json.Unmarshal(data, &msg); err != nil {
