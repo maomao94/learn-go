@@ -159,8 +159,8 @@ func (s *WebSocketServer) handleConnection(w http.ResponseWriter, r *http.Reques
 
 	// 消息处理循环
 	for {
-		// 读取消息
-		_, data, err := conn.ReadMessage()
+		// 读取消息（获取消息类型）
+		msgType, data, err := conn.ReadMessage()
 		if err != nil {
 			log.Printf("读取消息失败: %v", err)
 			break
@@ -169,7 +169,23 @@ func (s *WebSocketServer) handleConnection(w http.ResponseWriter, r *http.Reques
 		conn.SetReadDeadline(time.Now().Add(s.config.ReadTimeout))
 		conn.SetWriteDeadline(time.Now().Add(s.config.WriteTimeout))
 
-		// 处理消息
+		// 关键修复：处理WebSocket控制帧（Ping/Pong）
+		if msgType == websocket.PingMessage {
+			// 收到Ping帧，立即返回Pong帧（保持连接活性）
+			if err := conn.WriteMessage(websocket.PongMessage, data); err != nil {
+				log.Printf("发送Pong响应失败: %v", err)
+				break
+			}
+			continue // 处理完Ping帧，继续循环
+		}
+
+		// 只处理文本消息（忽略其他类型如二进制消息）
+		if msgType != websocket.TextMessage {
+			log.Printf("忽略非文本消息类型: %d", msgType)
+			continue
+		}
+
+		// 处理JSON文本消息
 		var msg Message
 		if err := json.Unmarshal(data, &msg); err != nil {
 			// 如果不是JSON格式，当作普通文本处理
@@ -262,7 +278,7 @@ func (s *WebSocketServer) Start() error {
 
 func main() {
 	// 命令行参数
-	port := flag.Int("port", 8080, "服务器端口")
+	port := flag.Int("port", 18080, "服务器端口")
 	authRequired := flag.Bool("auth", false, "是否需要认证")
 	flag.Parse()
 
