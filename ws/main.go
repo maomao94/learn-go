@@ -121,7 +121,7 @@ func (s *WebSocketServer) handleConnection(w http.ResponseWriter, r *http.Reques
 	defer conn.Close()
 
 	// 设置连接超时
-	conn.SetReadDeadline(time.Now().Add(s.config.ReadTimeout))
+	//conn.SetReadDeadline(time.Now().Add(s.config.ReadTimeout))
 	conn.SetWriteDeadline(time.Now().Add(s.config.WriteTimeout))
 
 	// 生成客户端ID
@@ -228,8 +228,8 @@ func main() {
 	// 创建服务器配置
 	config := ServerConfig{
 		Port:           *port,
-		ReadTimeout:    60 * time.Second,
-		WriteTimeout:   60 * time.Second,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
 		MaxMessageSize: 1024 * 1024, // 1MB
 	}
 
